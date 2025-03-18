@@ -1,0 +1,21 @@
+import useThemeStore from "../store/themeStore";
+import { FaSun, FaMoon } from "react-icons/fa";
+
+const ThemeToggle = () => {
+  const { theme, toggleTheme } = useThemeStore();
+
+  return (
+    <button
+      onClick={toggleTheme}
+      className=''
+    >
+      {theme === "light" ? (
+        <FaMoon color="gray" className='' />
+      ) : (
+        <FaSun color="Orange" className='h-6 w-6 text-yellow-400' />
+      )}
+    </button>
+  );
+};
+
+export default ThemeToggle;
