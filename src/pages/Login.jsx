@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import useAuthStore from "../store/authStore";
 import Input from "../components/Input.jsx";
 import Button from "../components/Button.jsx";
+import { useEffect } from "react";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -13,6 +14,13 @@ const Login = () => {
     password: "",
   });
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    //hide error after 5 seconds
+    const timeout = setTimeout(() => {
+      setError("");
+    }, 5000);
+    }, []);
 
   const handleChange = (e) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
