@@ -20,7 +20,8 @@ const Login = () => {
     const timeout = setTimeout(() => {
       setError("");
     }, 5000);
-    }, []);
+    return () => clearTimeout(timeout);
+  }, [error]);
 
   const handleChange = (e) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
