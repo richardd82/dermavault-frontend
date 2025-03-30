@@ -5,9 +5,22 @@ import Dashboard from './pages/Dashboard';
 import MainLayout from './layouts/MainLayout';
 import Patients from './pages/Patients';
 import Users from './pages/Users';
+import useThemeStore from './store/themeStore';
+import { useEffect } from 'react';
 
 function App() {
   const { isAuthenticated } = useAuthStore();
+
+  const { theme } = useThemeStore();
+
+  useEffect(() => {
+    const html = document.documentElement;
+    if (theme === "dark") {
+      html.classList.add("dark");
+    } else {
+      html.classList.remove("dark");
+    }
+  }, [theme]);
 
   return (
     <Router>

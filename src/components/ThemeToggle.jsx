@@ -3,7 +3,7 @@ import { FaSun, FaMoon } from "react-icons/fa";
 
 const ThemeToggle = () => {
   const { theme, toggleTheme } = useThemeStore();
-
+console.log(theme, "EL THEME Desde el ThemeToggle")
   return (
     <button
       onClick={toggleTheme}
