@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import useUserStore from "../store/userStore";
+import toast from "react-hot-toast";
+
 
 const roles = ["Admin", "Doctor", "Assistant"];
 
@@ -39,6 +41,16 @@ const AddUserForm = ({ onClose }) => {
     setSubmitting(false);
 
     if (res.success) {
+      toast.success("El usuario se creó correctamente", {
+        duration: 5000,
+        style: {
+          background: "#4f46e5",       // color de fondo
+          color: "#fff",               // color del texto
+          fontSize: "14px",            // tamaño de fuente
+          padding: "16px 20px",        // espaciado interno
+          borderRadius: "8px",         // bordes redondeados
+        },
+      });
       onClose();
     } else {
       alert("Error al guardar el usuario: " + res.message);

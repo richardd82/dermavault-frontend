@@ -7,6 +7,7 @@ import Patients from './pages/Patients';
 import Users from './pages/Users';
 import useThemeStore from './store/themeStore';
 import { useEffect } from 'react';
+import { Toaster } from "react-hot-toast";
 
 function App() {
   const { isAuthenticated } = useAuthStore();
@@ -24,6 +25,7 @@ function App() {
 
   return (
     <Router>
+      <Toaster position="bottom-right" reverseOrder={false} />
       <Routes>
         <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Login />} />
         {isAuthenticated && (
