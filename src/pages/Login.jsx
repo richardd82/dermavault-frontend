@@ -4,6 +4,7 @@ import useThemeStore from "../store/themeStore";
 import ThemeToggle from "../components/ThemeToggle";
 import { useNavigate } from "react-router-dom";
 import Input from "../components/Input.jsx";
+import logoImg from "../assets/derma-logo.png";
 
 const Login = () => {
   const { theme } = useThemeStore();
@@ -45,10 +46,10 @@ console.log(theme, "EL THEME")
       <div className="w-screen h-screen flex flex-col md:flex-row">
         {/* Branding - Top on mobile / Left on desktop */}
         <div className="w-full md:w-1/2 h-1/2 md:h-full flex flex-col items-center justify-center px-10 bg-[#a78bfa] dark:bg-[#4f46e5] text-white dark:text-[#f8f9fa]">
-          <div className="w-24 h-24 mb-6 bg-white rounded-full flex items-center justify-center text-[#a78bfa] dark:text-[#4f46e5] text-3xl font-bold">
-            DT
+          <div className="w-[284px] h-[284px] flex items-center justify-center">            
+            <img src={logoImg} alt="Logo" />
           </div>
-          <h1 className="text-4xl font-light mb-2">DermaTrack</h1>
+          <h1 className="text-4xl font-light mb-4">DermaVault</h1>
           <p className="text-lg text-center max-w-sm">
             Cuidamos tu piel, registramos tu historia.
           </p>
