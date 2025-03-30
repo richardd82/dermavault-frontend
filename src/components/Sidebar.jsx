@@ -17,7 +17,7 @@ const Sidebar = () => {
 
   return (
     
-    <div className='flex flex-col gap-32 md:gap-52 w-full h-full mt-10 '>
+    <div className='flex flex-col gap-32 md:gap-52 w-full h-full mt-10 md:w-[500px] '>
       
       {/* Menú de navegación vertical */}
       <nav className="flex flex-col  mt-5 gap-6 p-4 text-black dark:text-white h-full">
@@ -28,7 +28,7 @@ const Sidebar = () => {
       </nav>
 
       {/* Botón de Logout */}
-      <div className="flex-col w-full justify-end h-full p-8 hidden sm:block">
+      <div className="flex-col w-full justify-end h-full p-8 hidden sm:block sm:w-2/4">
         <Button onClick={handleLogout} className="mt-auto  p-2 rounded">
           Cerrar Sesión
         </Button>

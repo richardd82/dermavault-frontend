@@ -27,12 +27,12 @@ const Users = () => {
   return (
     <div className='p-4 md:p-6 w-full'>
       {/* Header de sección */}
-      <div className='flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4'>
-        <h1 className='text-2xl font-semibold text-[#1f2937] dark:text-[#e5e7eb]'>
+      <div className='flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6'>
+        <h1 className='text-xl sm:text-2xl font-semibold text-[#1f2937] dark:text-[#e5e7eb]'>
           Usuarios
         </h1>
         <button
-          className='bg-[#4f46e5] dark:bg-[#a78bfa] text-white px-4 py-2 rounded-lg hover:opacity-90 transition text-sm font-medium'
+          className='bg-[#4f46e5] dark:bg-[#a78bfa] text-white px-4 py-2 rounded-lg hover:opacity-90 transition text-sm w-full sm:w-auto'
           onClick={() => setShowModal(true)}
         >
           + Nuevo Usuario
@@ -40,8 +40,8 @@ const Users = () => {
       </div>
 
       {/* Tabla de usuarios */}
-      <div className='overflow-x-auto'>
-        <table className='min-w-full bg-white dark:bg-[#2a2b2f] rounded-lg shadow-md'>
+      <div className='w-full overflow-x-auto'>
+        <table className=' hidden sm:table min-w-[700px] w-full bg-white dark:bg-[#2a2b2f] rounded-lg shadow-md text-sm'>
           <thead className='bg-[#f8f9fa] dark:bg-[#1f2023] text-[#1f2937] dark:text-[#e5e7eb] text-sm'>
             <tr>
               <th className='p-3 text-left'>Usuario</th>
@@ -77,6 +77,42 @@ const Users = () => {
             ))}
           </tbody>
         </table>
+        {/* Cards solo para mobile */}
+        <div className='sm:hidden space-y-4'>
+          {users.map((u) => (
+            <div
+              key={u.id}
+              onClick={() => {
+                setSelectedUser(u);
+                setIsEditModalOpen(true);
+              }}
+              className='bg-white dark:bg-[#2a2b2f] p-4 rounded-lg shadow-md cursor-pointer transition hover:shadow-lg'
+            >
+              <div className='flex items-center gap-3 mb-3'>
+                <div className='w-10 h-10 rounded-full bg-[#4f46e5] dark:bg-[#a78bfa] text-white flex items-center justify-center text-sm font-bold'>
+                  {getInitials(u.first_name, u.last_name)}
+                </div>
+                <div>
+                  <p className='font-semibold'>{u.username}</p>
+                  <p className='text-xs text-gray-500 dark:text-gray-400'>
+                    {u.email}
+                  </p>
+                </div>
+              </div>
+              <div className='text-sm text-gray-700 dark:text-gray-300 space-y-1'>
+                <p>
+                  <span className='font-medium'>Nombre:</span> {u.first_name}
+                </p>
+                <p>
+                  <span className='font-medium'>Apellidos:</span> {u.last_name}
+                </p>
+                <p>
+                  <span className='font-medium'>Rol:</span> {u.role}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
       {isEditModalOpen && selectedUser && (
         <Modal
