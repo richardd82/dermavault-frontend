@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import useAuthStore from '../store/authStore';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import Button from '../components/Button';
 
 const Dashboard = () => {
   const { user, token, logout } = useAuthStore();
@@ -81,12 +82,12 @@ const Dashboard = () => {
         <p className="text-gray-500">Cargando información del usuario...</p>
       )}
 
-      <button 
+      <Button
+        className="mt-4 w-1/3" 
         onClick={handleLogout}
-        className="bg-red-600 text-white p-2 mt-4 rounded hover:bg-red-700"
       >
         Cerrar Sesión
-      </button>
+      </Button>
     </div>
   );
 };

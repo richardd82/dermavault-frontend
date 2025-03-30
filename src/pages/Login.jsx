@@ -42,7 +42,7 @@ const Login = () => {
   };
 console.log(theme, "EL THEME")
   return (
-    <div className={`bg-[#f8f9fa] dark:bg-[#1a1b1e] transition-colors duration-300 ${theme}`}>
+    <div className={`bg-[#f8f9fa] dark:bg-[#1a1b1e] transition-colors duration-500 ${theme}`}>
       <div className="w-screen h-screen flex flex-col md:flex-row">
         {/* Branding - Top on mobile / Left on desktop */}
         <div className="w-full md:w-1/2 h-1/2 md:h-full flex flex-col items-center justify-center px-10 bg-[#a78bfa] dark:bg-[#4f46e5] text-white dark:text-[#f8f9fa]">
@@ -87,14 +87,14 @@ console.log(theme, "EL THEME")
               />
               <button
                 type="submit"
-                className="w-full py-2 bg-[#a78bfa] dark:bg-[#4f46e5] text-white rounded-lg hover:opacity-90 transition"
+                className="w-full py-2 bg-[#a78bfa] dark:bg-[#4f46e5] text-white rounded-lg hover:opacity-80 transition"
               >
                 Iniciar sesión
               </button>
               <p className="text-center text-sm mt-4">
-                ¿No tienes cuenta?{" "}
+                ¿Olvidaste tu contraseña?{" "}
                 <a href="#" className="text-[#a78bfa] dark:text-[#4f46e5] hover:underline">
-                  Regístrate
+                  Recuperala
                 </a>
               </p>
             </form>
