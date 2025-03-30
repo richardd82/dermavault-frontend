@@ -86,7 +86,7 @@ const Users = () => {
                 setSelectedUser(u);
                 setIsEditModalOpen(true);
               }}
-              className='bg-white dark:bg-[#2a2b2f] p-4 rounded-lg shadow-md cursor-pointer transition hover:shadow-lg'
+              className='bg-white dark:bg-[#2a2b2f] p-4 rounded-lg shadow-md cursor-pointer transition hover:shadow-lg hover:opacity-80 transform hover:scale-90'
             >
               <div className='flex items-center gap-3 mb-3'>
                 <div className='w-10 h-10 rounded-full bg-[#4f46e5] dark:bg-[#a78bfa] text-white flex items-center justify-center text-sm font-bold'>
