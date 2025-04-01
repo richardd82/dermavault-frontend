@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import useAuthStore from '../store/authStore';
 import Button from './Button';
 import { AiOutlineHome } from "react-icons/ai";
@@ -9,6 +9,7 @@ import { FaRegUser } from "react-icons/fa";
 
 const Sidebar = () => {
   const { user, logout } = useAuthStore();
+  const navigate = useNavigate();
   console.log(user, "EL USUARIO EN SIDEBAR")
   const handleLogout = () => {
     logout();

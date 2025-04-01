@@ -1,5 +1,5 @@
 import React from "react";
-import useThemeStore from "../store/themeStore";
+// import useThemeStore from "../store/themeStore";
 import useUserStore from "../store/userStore";
 import { FaUserCircle } from "react-icons/fa";
 import { useEffect } from "react";
@@ -14,8 +14,8 @@ const getInitials = (first, last) => {
 };
 
 const Users = () => {
-  const { theme } = useThemeStore();
-  const { users, fetchUsers, loading, error } = useUserStore();
+  // const { theme } = useThemeStore();
+  const { users, fetchUsers } = useUserStore();
   const [showModal, setShowModal] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
@@ -32,7 +32,7 @@ const Users = () => {
           Usuarios
         </h1>
         <button
-          className='bg-[#4f46e5] dark:bg-[#a78bfa] text-white px-4 py-2 rounded-lg hover:opacity-90 transition text-sm w-full sm:w-auto'
+          className='bg-[#a78bfa] dark:bg-[#4f46e5] text-white px-4 py-2 rounded-lg hover:opacity-90 transition text-sm w-full sm:w-auto'
           onClick={() => setShowModal(true)}
         >
           + Nuevo Usuario
@@ -42,7 +42,7 @@ const Users = () => {
       {/* Tabla de usuarios */}
       <div className='w-full overflow-x-auto'>
         <table className=' hidden sm:table min-w-[700px] w-full bg-white dark:bg-[#2a2b2f] rounded-lg shadow-md text-sm'>
-          <thead className='bg-[#f8f9fa] dark:bg-[#1f2023] text-[#1f2937] dark:text-[#e5e7eb] text-sm'>
+          <thead className='bg-[#e1e5e9] dark:bg-[#1f2023] text-[#1f2937] dark:text-[#e5e7eb] text-sm'>
             <tr>
               <th className='p-3 text-left'>Usuario</th>
               <th className='p-3 text-left'>Contraseña</th>
@@ -63,7 +63,7 @@ const Users = () => {
                 className='cursor-pointer border-b border-gray-100 dark:border-gray-700 hover:bg-[#f3f4f6] dark:hover:bg-[#1f2023] transition'
               >
                 <td className='p-3 flex items-center gap-3'>
-                  <div className='w-8 h-8 rounded-full bg-[#4f46e5] dark:bg-[#a78bfa] text-white flex items-center justify-center text-xs font-bold'>
+                  <div className='w-10 h-10 rounded-full bg-[#a78bfa] dark:bg-[#4f46e5] text-white flex items-center justify-center text-xs font-bold'>
                     {getInitials(u.first_name, u.last_name)}
                   </div>
                   <span>{u.username}</span>

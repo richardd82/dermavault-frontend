@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import axios from "axios";
 import api from "../hooks/axiosConfig";
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
@@ -53,7 +52,10 @@ const useUserStore = create((set, get) => ({
   deleteUser: async (id) => {
     try {
       const res = await api.delete(`${API_URL}/users${id}`);
-
+// validar comparando los id de la respuesta con el id del usuario
+      if (res.status !== 200) {
+        throw new Error("Error al eliminar usuario");
+      }
       // Eliminar usuario localmente (o marcar como inactivo si tu API lo hace)
       const updatedUsers = get().users.filter(user => user.id !== id);
       set({ users: updatedUsers });
