@@ -22,11 +22,20 @@ const usePatientStore = create((set, get) => ({
       set({ error: err.message || "Error al obtener usuarios", loading: false });
     }
   },
-
+  // Crear paciente
+  createPatient: async (newData) => {
+    try {
+      const res = await api.post(`${API_URL}/patients/patient`, newData);
+      set((state) => ({ patients: [...state.patients, res.data] }));
+      return { success: true };
+    } catch (err) {
+      return { success: false, message: err.message || "Error al crear usuario" };
+    }
+  },
   // Editar paciente
   editPatient: async (id, updatedData) => {
     try {
-      const res = await api.put(`${API_URL}/patients/patients/${id}`, updatedData);
+      const res = await api.put(`${API_URL}/patients/patient/${id}`, updatedData);
       const updatedList = get().patients.map(patient =>
         patient.id === id ? res.data : patient
       );

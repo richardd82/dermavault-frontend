@@ -2,6 +2,8 @@
 import React, { useState } from 'react';
 import usePatientStore from '../store/patientStore';
 import clsx from 'clsx';
+import toast from "react-hot-toast";
+
 
 const PatientModal = ({ patient, onClose }) => {
   const [editMode, setEditMode] = useState(false);
@@ -17,10 +19,25 @@ const PatientModal = ({ patient, onClose }) => {
   const handleToggleEdit = async () => {
     if (editMode) {
       try {
-        await editPatient(patient.id, formData);
+        const res = await editPatient(patient.id, formData);
         setEditMode(false);
+        if (res.success) {
+            toast.success("El usuario se creó correctamente", {
+              duration: 5000,
+              style: {
+                background: "#4f46e5",       // color de fondo
+                color: "#fff",               // color del texto
+                fontSize: "14px",            // tamaño de fuente
+                padding: "16px 20px",        // espaciado interno
+                borderRadius: "8px",         // bordes redondeados
+              },
+            });
+            onClose();
+          } else {
+            alert("Error al guardar el usuario: " + res.message);
+          }
       } catch (err) {
-        alert('Error al guardar los cambios');
+        err('Error al guardar los cambios');
       }
     } else {
       setEditMode(true);
@@ -129,8 +146,9 @@ const PatientModal = ({ patient, onClose }) => {
 
 export default PatientModal;
 
+// PatientModal.jsx
 // import React, { useState } from 'react';
-// import usePatientStore from '../store/patientStore.js';
+// import usePatientStore from '../store/patientStore';
 // import clsx from 'clsx';
 
 // const PatientModal = ({ patient, onClose }) => {
@@ -140,7 +158,8 @@ export default PatientModal;
 //   const { editPatient } = usePatientStore();
 
 //   const handleChange = (e) => {
-//     setFormData({ ...formData, [e.target.name]: e.target.value });
+//     const { name, value } = e.target;
+//     setFormData({ ...formData, [name]: value });
 //   };
 
 //   const handleToggleEdit = async () => {
@@ -155,6 +174,7 @@ export default PatientModal;
 //       setEditMode(true);
 //     }
 //   };
+
 //   const getFullName = () => {
 //     return `${formData.nombre || ''} ${formData.apellido || ''}`.trim();
 //   };
@@ -202,8 +222,34 @@ export default PatientModal;
 //         </div>
 
 //         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+//           {/* Campo personalizado para nombre completo */}
+//           <div className="flex flex-col gap-1 sm:col-span-2">
+//             <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Nombre Completo</label>
+//             {editMode ? (
+//               <div className="flex flex-col sm:flex-row gap-2">
+//                 <input
+//                   type="text"
+//                   name="nombre"
+//                   value={formData.nombre || ''}
+//                   onChange={handleChange}
+//                   className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100"
+//                   placeholder="Nombre(s)"
+//                 />
+//                 <input
+//                   type="text"
+//                   name="apellido"
+//                   value={formData.apellido || ''}
+//                   onChange={handleChange}
+//                   className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100"
+//                   placeholder="Apellidos"
+//                 />
+//               </div>
+//             ) : (
+//               <p className="text-gray-900 dark:text-gray-100">{getFullName()}</p>
+//             )}
+//           </div>
+
 //           {renderField('Cédula', 'cedula')}
-//           {renderField('Nombre Completo', 'full_name')}
 //           {renderField('Fecha de Nacimiento', 'fecha_nacimiento')}
 //           {renderField('Edad', 'edad')}
 //           {renderField('Lugar de Nacimiento', 'lugar_nacimiento')}

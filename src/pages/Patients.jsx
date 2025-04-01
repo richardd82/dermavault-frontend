@@ -3,6 +3,8 @@ import React, { useEffect } from 'react';
 import usePatientStore from '../store/patientStore.js';
 import Button from '../components/Button.jsx';
 import PatientModal from '../components/PatientModal.jsx';
+import { useState } from 'react';
+import NewPatientModal from '../components/NewPatientModal';
 
 const formatDate = (dateString) => {
   if (!dateString) return '';
@@ -26,6 +28,8 @@ const Patients = () => {
     closePatientModal,
   } = usePatientStore();
 
+  const [showNewModal, setShowNewModal] = useState(false);
+
   useEffect(() => {
     fetchPatients();
   }, [fetchPatients]);
@@ -43,6 +47,7 @@ const Patients = () => {
         <h1 className="text-2xl font-bold mb-6 dark:text-[#e5e7eb]">Pacientes</h1>
         <button
           className='bg-[#a78bfa] dark:bg-[#4f46e5] text-white px-4 py-2 rounded-lg hover:opacity-90 transition text-sm w-full sm:w-auto'
+          onClick={() => setShowNewModal(true)}
         >
           + Nuevo Usuario
         </button>
@@ -96,6 +101,7 @@ const Patients = () => {
       )}
 
       {showModal && patient && <PatientModal patient={patient} onClose={closePatientModal} />}
+      {showNewModal && <NewPatientModal onClose={() => setShowNewModal(false)} />}
     </div>
   );
 };
