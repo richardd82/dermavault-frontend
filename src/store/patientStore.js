@@ -4,12 +4,14 @@ import api from "../hooks/axiosConfig";
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
-const usePatientStore = create((set) => ({
+const usePatientStore = create((set, get) => ({
   patients: [],
   loading: false,
   error: null,
+  patient: null,
+  showModal: false,
 
-  // Acción asíncrona para obtener la lista de pacientes
+  // Obtener todos los pacientes
   fetchPatients: async () => {
     set({ loading: true, error: null });
     try {
@@ -20,6 +22,71 @@ const usePatientStore = create((set) => ({
       set({ error: err.message || "Error al obtener usuarios", loading: false });
     }
   },
+
+  // Editar paciente
+  editPatient: async (id, updatedData) => {
+    try {
+      const res = await api.put(`${API_URL}/patients/patients/${id}`, updatedData);
+      const updatedList = get().patients.map(patient =>
+        patient.id === id ? res.data : patient
+      );
+      set({ patients: updatedList, patient: res.data });
+      return { success: true };
+    } catch (error) {
+      console.error('Error editando paciente:', error);
+      throw error;
+    }
+  },
+
+  // Control modal
+  openPatientModal: (patient) => set({ patient, showModal: true }),
+  closePatientModal: () => set({ showModal: false, patient: null }),
 }));
 
 export default usePatientStore;
+
+// // patientStore.js
+// import { create } from 'zustand';
+// import api from "../hooks/axiosConfig";
+
+// const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+
+// const usePatientStore = create((set, get) => ({
+//   patients: [],
+//   loading: false,
+//   error: null,
+
+//   // Acción asíncrona para obtener la lista de pacientes
+//   fetchPatients: async () => {
+//     set({ loading: true, error: null });
+//     try {
+//       const res = await api.get(`${API_URL}/patients/patients`);
+//       console.log(res.data, "respuesta de pacientes desde el store");
+//       set({ patients: res.data, loading: false });
+//     } catch (err) {
+//       set({ error: err.message || "Error al obtener usuarios", loading: false });
+//     }
+//   },
+//   editPatient: async (id, updatedData) => {
+//     try {
+//       const res = await api.put(`${API_URL}/patients/patients/${id}`, updatedData);
+
+//       if (!res.ok) {
+//         throw new Error('Error al actualizar el paciente');
+//       }
+//       // Actualizar el usuario modificado en la lista
+//       const updatedPatient = get().patients.map(patient =>
+//         patient.id === id ? res.data : patient
+//       );
+//       set({ patients: updatedPatient });
+
+//       return { success: true };
+
+//     } catch (error) {
+//       console.error('Error editando paciente:', error);
+//       throw error;
+//     }
+//   },
+// }));
+
+// export default usePatientStore;

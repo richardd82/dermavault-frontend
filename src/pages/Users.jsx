@@ -63,7 +63,7 @@ const Users = () => {
                 className='cursor-pointer border-b border-gray-100 dark:border-gray-700 hover:bg-[#f3f4f6] dark:hover:bg-[#1f2023] transition'
               >
                 <td className='p-3 flex items-center gap-3'>
-                  <div className='w-10 h-10 rounded-full bg-[#a78bfa] dark:bg-[#4f46e5] text-white flex items-center justify-center text-xs font-bold'>
+                  <div className='w-10 h-10 rounded-full bg-[#a78bfa] dark:bg-[#4f46e5] text-white flex items-center justify-center text-xs font-bold '>
                     {getInitials(u.first_name, u.last_name)}
                   </div>
                   <span>{u.username}</span>
