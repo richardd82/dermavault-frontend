@@ -126,7 +126,7 @@ const NewPatientModal = ({ onClose }) => {
                             />
                         </div>
 
-                        {renderField('Fecha de Nacimiento', 'fecha_nacimiento')}
+                        {renderField('Fecha de Nacimiento ej.(1950-12-31)', 'fecha_nacimiento')}
                         {renderField('Edad', 'edad')}
                         {renderField('Lugar de Nacimiento', 'lugar_nacimiento')}
                         {renderField('Sexo', 'sexo')}
