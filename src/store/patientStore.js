@@ -41,9 +41,8 @@ const usePatientStore = create((set, get) => ({
       );
       set({ patients: updatedList, patient: res.data });
       return { success: true };
-    } catch (error) {
-      console.error('Error editando paciente:', error);
-      throw error;
+    } catch (err) {
+      return { success: false, message: err.message || "Error al actualizar usuario" };
     }
   },
 
