@@ -8,13 +8,16 @@ import NewPatientModal from '../components/NewPatientModal';
 
 const formatDate = (dateString) => {
   if (!dateString) return '';
-  const date = new Date(dateString);
-  if (isNaN(date.getTime())) return dateString;
-  const day = String(date.getDate()).padStart(2, '0');
-  const month = date.toLocaleString('es-ES', { month: 'long' });
-  const year = date.getFullYear();
-  return `${day}-${month}-${year}`;
+  const [year, month, day] = dateString.split('T')[0].split('-'); // fuerza fecha sin zona horaria
+  const date = new Date(+year, month - 1, +day); // mes empieza desde 0
+
+  const dayFormatted = String(date.getDate()).padStart(2, '0');
+  const monthFormatted = date.toLocaleString('es-ES', { month: 'long' });
+  const yearFormatted = date.getFullYear();
+
+  return `${dayFormatted}-${monthFormatted}-${yearFormatted}`;
 };
+
 
 const Patients = () => {
   const {
@@ -29,6 +32,8 @@ const Patients = () => {
   } = usePatientStore();
 
   const [showNewModal, setShowNewModal] = useState(false);
+
+  console.log(patients, "<================PACIENTES");
 
   useEffect(() => {
     fetchPatients();

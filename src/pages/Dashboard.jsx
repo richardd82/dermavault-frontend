@@ -19,17 +19,17 @@ const Dashboard = () => {
         return;
       }
 
-      console.log('📡 Haciendo petición a:', `${API_URL}/users/${user.id}`);
+      // console.log('📡 Haciendo petición a:', `${API_URL}/users/${user.id}`);
 
       try {
         const res = await axios.get(`${API_URL}/users/${user.id}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
 
-        console.log('✅ Respuesta de la API:', res);
+        // console.log('✅ Respuesta de la API:', res);
 
         if (res.data?.id === user.id) {
-          console.log('✅ Datos correctos:', res.data);
+          // console.log('✅ Datos correctos:', res.data);
           setUserData(res.data);
         } else {
           console.log('⛔ El usuario en la API no coincide con el usuario en el estado.');

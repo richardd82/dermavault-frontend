@@ -239,6 +239,7 @@ const NewPatientModal = ({ onClose }) => {
               <option value=''>Selecciona</option>
               <option value='M'>Masculino</option>
               <option value='F'>Femenino</option>
+              <option value='O'>Otro</option>
             </select>
             {errors.sexo && (
               <span className='text-sm text-red-500'>{errors.sexo}</span>
@@ -265,7 +266,9 @@ const NewPatientModal = ({ onClose }) => {
           </div>
 
           {renderField("Profesión", "profesion")}
+          {renderField("Teléfono Casa", "telefono_casa")}
           {renderField("Teléfono Móvil", "telefono_movil")}
+          {renderField("Teléfono Trabajo", "telefono_trabajo")}
           {renderField("Email", "email")}
           {renderField("Referido por", "referido_por")}
           {renderField("Dirección", "direccion", true)}

@@ -10,7 +10,7 @@ import { FaRegUser } from "react-icons/fa";
 const Sidebar = () => {
   const { user, logout } = useAuthStore();
   const navigate = useNavigate();
-  console.log(user, "EL USUARIO EN SIDEBAR")
+  // console.log(user, "EL USUARIO EN SIDEBAR")
   const handleLogout = () => {
     logout();
     navigate('/');

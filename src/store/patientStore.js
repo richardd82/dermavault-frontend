@@ -16,7 +16,7 @@ const usePatientStore = create((set, get) => ({
     set({ loading: true, error: null });
     try {
       const res = await api.get(`${API_URL}/patients/patients`);
-      console.log(res.data, "respuesta de pacientes desde el store");
+      // console.log(res.data, "respuesta de pacientes desde el store");
       set({ patients: res.data, loading: false });
     } catch (err) {
       set({ error: err.message || "Error al obtener usuarios", loading: false });

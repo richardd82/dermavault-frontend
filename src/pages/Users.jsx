@@ -23,7 +23,7 @@ const Users = () => {
   useEffect(() => {
     fetchUsers();
   }, [fetchUsers]);
-  console.log(users, "LOS USUARIOS EN USERS");
+  // console.log(users, "LOS USUARIOS EN USERS");
   return (
     <div className='p-4 md:p-6 w-full'>
       {/* Header de sección */}
