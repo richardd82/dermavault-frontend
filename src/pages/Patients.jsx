@@ -100,6 +100,40 @@ const Patients = () => {
           </tbody>
         </table>
       )}
+      {/* Cards para móviles */}
+      <div className="grid grid-cols-1 gap-4 sm:hidden">
+        {patients.map((patient) => (
+          <div
+            key={patient.id}
+            onClick={() => openPatientModal(patient)}
+            className="bg-white dark:bg-[#2a2b2f] rounded-lg shadow p-4 border border-gray-200 dark:border-gray-600 cursor-pointer hover:bg-gray-50 dark:hover:bg-[#1f2023] transition"
+          >
+            <div className="flex items-center gap-4 mb-3">
+              <div className="h-10 w-10 flex items-center justify-center rounded-full bg-[#a78bfa] dark:bg-[#4f46e5] text-white font-semibold">
+                {getInitials(patient.nombre)}
+              </div>
+              <div>
+                <p className="font-semibold text-gray-800 dark:text-white">
+                  {patient.nombre} {patient.apellido}
+                </p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  Cédula: {patient.cedula}
+                </p>
+              </div>
+            </div>
+
+            <div className="text-sm text-gray-700 dark:text-gray-300">
+              <p>Sexo: {patient.sexo}</p>
+              <p>Edad: {patient.edad}</p>
+              <p>F. Nac: {formatDate(patient.fecha_nacimiento)}</p>
+            </div>
+
+            <div className="mt-4">
+              <Button className="w-full text-sm">Ver Historia Clínica</Button>
+            </div>
+          </div>
+        ))}
+      </div>
 
       {!loading && !error && patients.length === 0 && (
         <p className="text-white">No hay pacientes registrados.</p>
