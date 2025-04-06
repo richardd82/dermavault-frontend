@@ -38,16 +38,6 @@ const useMedicalHistoryStore = create((set, get) => ({
     }));
   },
 
-  searchHistories: async (query) => {
-    if (!query || query.length < 2) return;
-    try {
-      const res = await api.get(`${API_URL}/histories/search?q=${query}`);
-      set({ histories: res.data.data });
-    } catch (error) {
-      console.error("Error buscando historias:", error);
-    }
-  },
-
   getHistoryByCedula: async (cedula) => {
     try {
       const res = await api.get(`/histories/cedula/${cedula}`);

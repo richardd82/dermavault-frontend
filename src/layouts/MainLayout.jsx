@@ -4,7 +4,7 @@ import useAuthStore from "../store/authStore";
 import useThemeStore from "../store/themeStore";
 import useSearchStore from "../store/searchStore";
 import { useDebounce } from "../hooks/useDebounce";
-
+import { useLocation } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import ThemeToggle from "../components/ThemeToggle";
 import PatientModal from "../components/PatientModal";
@@ -15,25 +15,32 @@ export default function MainLayout() {
   const { user } = useAuthStore();
   const { theme } = useThemeStore();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const location = useLocation();
 
   const [search, setSearch] = useState("");
   const debounced = useDebounce(search, 300);
   const {
-    results,
+    patientQuery,
     setQuery,
-    clearSearch,
+    searchPatients,
+    clearPatientSearch,
+    patientResults,
+    loadingPatients,
     selectedPatient,
     setSelectedPatient,
-    clearSelectedPatient
   } = useSearchStore();
 
   useEffect(() => {
-    if (debounced.trim().length > 1) {
-      setQuery(debounced);
-    } else {
-      clearSearch();
+    if (patientQuery.length >= 2) {
+      searchPatients(patientQuery);
     }
-  }, [debounced]);
+  }, [patientQuery]);
+
+  const handleSearchChange = (e) => {
+    const value = e.target.value;
+    searchPatients(value); // 🔍 dispara directamente la búsqueda
+  };
+
 
   return (
     <div
@@ -48,7 +55,9 @@ export default function MainLayout() {
 
       <aside
         className={`fixed top-0 left-0 z-40 w-[250px] h-full bg-[#f8f9fa] dark:bg-[#2a2b2f] border-r border-gray-200 dark:border-gray-700 transform transition-transform duration-300 ease-in-out
-        ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0 md:static md:flex md:flex-col justify-end`}
+        ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        } md:translate-x-0 md:static md:flex md:flex-col justify-end`}
       >
         <div className='flex items-center gap-4 h-[72px] md:h-[80px] p-4 text-xl font-bold bg-[#a78bfa] dark:bg-[#4f46e5] text-white'>
           <img src={logoImg} alt='Logo DermaVault' className='w-12 h-12' />
@@ -72,26 +81,29 @@ export default function MainLayout() {
             <div className='relative w-full max-w-xl hidden sm:block mx-auto'>
               <input
                 type='text'
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                value={patientQuery}
+                onChange={(e) => setQuery(e.target.value)}  
                 placeholder='Buscar paciente...'
                 className='pl-10 pr-4 py-2 w-full rounded-md bg-[#f8f9fa] dark:bg-[#1f2023] border border-gray-300 dark:border-gray-600 text-sm focus:outline-none focus:ring-2 focus:ring-[#4f46e5]'
               />
               <FaSearch className='absolute top-2.5 left-3 text-gray-500 dark:text-gray-400' />
 
-              {results.length > 0 && (
-                <div className="absolute top-full left-0 mt-1 w-full bg-white dark:bg-[#1a1b1e] border border-gray-200 dark:border-gray-700 rounded-md shadow-lg z-50 max-h-64 overflow-auto">
-                  {results.map((p) => (
+              {location.pathname !== "/patients" && patientResults.length > 0 && (
+                <div className='absolute top-full left-0 mt-1 w-full bg-white dark:bg-[#1a1b1e] border border-gray-200 dark:border-gray-700 rounded-md shadow-lg z-50 max-h-64 overflow-auto'>
+                  {patientResults.map((p) => (
                     <div
                       key={p.id}
-                      className="px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-[#2a2b2f] cursor-pointer"
+                      className='px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-[#2a2b2f] cursor-pointer'
                       onClick={() => {
                         setSelectedPatient(p);
-                        clearSearch();
-                        setSearch('');
+                        clearPatientSearch();
+                        setSearch("");
                       }}
                     >
-                      <span className="font-medium">{p.nombre} {p.apellido}</span> — <span className="text-gray-500">{p.cedula}</span>
+                      <span className='font-medium'>
+                        {p.nombre} {p.apellido}
+                      </span>{" "}
+                      — <span className='text-gray-500'>{p.cedula}</span>
                     </div>
                   ))}
                 </div>
@@ -156,7 +168,7 @@ export default function MainLayout() {
 //     clearSearch,
 //     selectedPatient,
 //     setSelectedPatient,
-//     clearSelectedPatient
+//     clearPatientSearch
 //   } = useSearchStore();
 
 //   useEffect(() => {
@@ -250,13 +262,12 @@ export default function MainLayout() {
 //       {selectedPatient && (
 //         <PatientModal
 //           patient={selectedPatient}
-//           onClose={() => clearSelectedPatient()}
+//           onClose={() => clearPatientSearch()}
 //         />
 //       )}
 //     </div>
 //   );
 // }
-
 
 // // import { useState } from "react";
 // // import { Outlet } from "react-router-dom";

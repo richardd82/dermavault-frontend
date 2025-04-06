@@ -3,14 +3,17 @@ import React, { useState } from 'react';
 import usePatientStore from '../store/patientStore';
 import clsx from 'clsx';
 import toast from "react-hot-toast";
+import useSearchStore from '../store/searchStore';
+import { useEffect } from 'react';
 
 
 const PatientModal = ({ patient, onClose }) => {
     const [editMode, setEditMode] = useState(false);
     const [formData, setFormData] = useState({ ...patient });
     const { editPatient } = usePatientStore();
+    const { clearSelectedPatient } = useSearchStore();
 
-    // console.log(patient, "<================PACIENTES");
+    // console.log(patient, "<================PACIENTES");    
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -23,6 +26,11 @@ const PatientModal = ({ patient, onClose }) => {
 
         setFormData(updatedFormData);
     };
+
+    const handleClose = () => {
+        clearSelectedPatient(); // 🧼 limpia desde el store
+        if (onClose) onClose();  // ⛔ solo si estás pasándolo también por props
+      };
 
     const handleToggleEdit = async () => {
         if (editMode) {
@@ -255,7 +263,7 @@ const PatientModal = ({ patient, onClose }) => {
 
                 <div className="flex justify-end pt-2">
                     <button
-                        onClick={onClose}
+                        onClick={handleClose}
                         className="text-sm text-gray-600 dark:text-gray-300 hover:underline"
                     >
                         Cerrar

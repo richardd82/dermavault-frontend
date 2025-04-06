@@ -8,6 +8,7 @@ import NewPatientModal from "../components/NewPatientModal";
 import useMedicalHistoryStore from "../store/medicalHistoryStore";
 import HistoryDetailModal from "../components/HistoryDetailModal";
 import NewHistoryModal from "../components/NewHistoryModal";
+import useSearchStore from "../store/searchStore";
 
 const formatDate = (dateString) => {
   if (!dateString) return "";
@@ -33,6 +34,9 @@ const Patients = () => {
     closePatientModal,
   } = usePatientStore();
 
+  const { patientQuery, patientResults, loadingPatients, clearPatientSearch } =
+    useSearchStore();
+
   const [showNewModal, setShowNewModal] = useState(false);
   const [selectedHistory, setSelectedHistory] = useState(null); // Para mostrar el modal con los datos de la historia si ya existe
   const [creatingHistoryFor, setCreatingHistoryFor] = useState(null); // Para crear una historia nueva
@@ -44,6 +48,9 @@ const Patients = () => {
   useEffect(() => {
     fetchPatients();
     getHistories();
+    return () => {
+      clearPatientSearch();
+    };
   }, [fetchPatients]);
 
   const getInitials = (fullName) => {
@@ -62,6 +69,8 @@ const Patients = () => {
       setCreatingHistoryFor(patient); // abre modal con cédula precargada
     }
   };
+
+  const dataToShow = patientQuery.length > 1 ? patientResults : patients;
 
   return (
     <div className='p-4'>
@@ -103,7 +112,7 @@ const Patients = () => {
             </tr>
           </thead>
           <tbody>
-            {patients.map((patient) => (
+            {dataToShow.map((patient) => (
               <tr
                 key={patient.id}
                 className='cursor-pointer border-b border-gray-100 dark:border-gray-700 hover:bg-[#f3f4f6] dark:hover:bg-[#1f2023] transition'
