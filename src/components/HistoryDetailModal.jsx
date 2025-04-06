@@ -50,7 +50,7 @@ const HistoryDetailModal = ({ history, onClose }) => {
               onClick={() => setEditMode(!editMode)}
               className={clsx(
                 "px-4 py-2 rounded-md text-white",
-                editMode ? "bg-[#4f46e5]" : "bg-[#a78bfa]"
+                editMode ? "bg-[#a78bfa] dark:bg-[#4f46e5]" : "bg-[#a78bfa] dark:bg-[#4f46e5]"
               )}
             >
               {editMode ? "Guardar" : "Editar"}

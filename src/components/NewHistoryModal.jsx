@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import useMedicalHistoryStore from "../store/medicalHistoryStore";
 import toast from "react-hot-toast";
 
-const NewHistoryModal = ({ onClose }) => {
+const NewHistoryModal = ({ onClose, prefillCedula = "" }) => {
   const { createHistory } = useMedicalHistoryStore();
 
   const [formData, setFormData] = useState({
-    cedula: "M-",
+    cedula: prefillCedula ? prefillCedula : "M-",
     clinical_data: {
       padecimiento_actual: "",
       antecedentes_heredofamiliares: "",

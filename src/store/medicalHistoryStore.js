@@ -46,6 +46,15 @@ const useMedicalHistoryStore = create((set, get) => ({
     } catch (error) {
       console.error("Error buscando historias:", error);
     }
+  },
+
+  getHistoryByCedula: async (cedula) => {
+    try {
+      const res = await api.get(`/histories/cedula/${cedula}`);
+      return res.data;
+    } catch (err) {
+      return null; // No hay historia
+    }
   }
 }));
 

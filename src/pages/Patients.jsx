@@ -1,23 +1,25 @@
 // Patients.jsx
-import React, { useEffect } from 'react';
-import usePatientStore from '../store/patientStore.js';
-import Button from '../components/Button.jsx';
-import PatientModal from '../components/PatientModal.jsx';
-import { useState } from 'react';
-import NewPatientModal from '../components/NewPatientModal';
+import React, { useEffect } from "react";
+import usePatientStore from "../store/patientStore.js";
+import Button from "../components/Button.jsx";
+import PatientModal from "../components/PatientModal.jsx";
+import { useState } from "react";
+import NewPatientModal from "../components/NewPatientModal";
+import useMedicalHistoryStore from "../store/medicalHistoryStore";
+import HistoryDetailModal from "../components/HistoryDetailModal";
+import NewHistoryModal from "../components/NewHistoryModal";
 
 const formatDate = (dateString) => {
-  if (!dateString) return '';
-  const [year, month, day] = dateString.split('T')[0].split('-'); // fuerza fecha sin zona horaria
+  if (!dateString) return "";
+  const [year, month, day] = dateString.split("T")[0].split("-"); // fuerza fecha sin zona horaria
   const date = new Date(+year, month - 1, +day); // mes empieza desde 0
 
-  const dayFormatted = String(date.getDate()).padStart(2, '0');
-  const monthFormatted = date.toLocaleString('es-ES', { month: 'long' });
+  const dayFormatted = String(date.getDate()).padStart(2, "0");
+  const monthFormatted = date.toLocaleString("es-ES", { month: "long" });
   const yearFormatted = date.getFullYear();
 
   return `${dayFormatted}-${monthFormatted}-${yearFormatted}`;
 };
-
 
 const Patients = () => {
   const {
@@ -32,24 +34,41 @@ const Patients = () => {
   } = usePatientStore();
 
   const [showNewModal, setShowNewModal] = useState(false);
+  const [selectedHistory, setSelectedHistory] = useState(null); // Para mostrar el modal con los datos de la historia si ya existe
+  const [creatingHistoryFor, setCreatingHistoryFor] = useState(null); // Para crear una historia nueva
+  const { getHistoryByCedula, histories, getHistories } =
+    useMedicalHistoryStore();
 
-  console.log(patients, "<================PACIENTES");
+  // console.log(patients, "<================PACIENTES");
 
   useEffect(() => {
     fetchPatients();
+    getHistories();
   }, [fetchPatients]);
 
   const getInitials = (fullName) => {
-    if (!fullName) return '';
-    const parts = fullName.split(' ');
+    if (!fullName) return "";
+    const parts = fullName.split(" ");
     const initials = parts.map((p) => p.charAt(0).toUpperCase()).slice(0, 2);
-    return initials.join('');
+    return initials.join("");
+  };
+
+  const handleHistoryClick = async (patient) => {
+    const history = await getHistoryByCedula(patient.cedula);
+
+    if (history) {
+      setSelectedHistory(history);
+    } else {
+      setCreatingHistoryFor(patient); // abre modal con cédula precargada
+    }
   };
 
   return (
-    <div className="p-4">
+    <div className='p-4'>
       <div className='flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6'>
-        <h1 className="text-2xl font-bold mb-6 dark:text-[#e5e7eb]">Pacientes</h1>
+        <h1 className='text-2xl font-bold mb-6 dark:text-[#e5e7eb]'>
+          Pacientes
+        </h1>
         <button
           className='bg-[#a78bfa] dark:bg-[#4f46e5] text-white px-4 py-2 rounded-lg hover:opacity-90 transition text-sm w-full sm:w-auto'
           onClick={() => setShowNewModal(true)}
@@ -58,42 +77,81 @@ const Patients = () => {
         </button>
       </div>
 
-      {loading && <p className="text-gray-500">Cargando pacientes...</p>}
-      {error && <p className="text-red-500">Error: {error}</p>}
+      {loading && <p className='text-gray-500'>Cargando pacientes...</p>}
+      {error && <p className='text-red-500'>Error: {error}</p>}
 
       {!loading && !error && patients.length > 0 && (
-        <table className="hidden sm:table min-w-[700px] w-full bg-white dark:bg-[#2a2b2f] rounded-lg shadow-md text-sm">
-          <thead className="bg-[#e1e5e9] dark:bg-[#1f2023] text-[#1f2937] dark:text-white text-sm">
+        <table className='hidden sm:table min-w-[700px] w-full bg-white dark:bg-[#2a2b2f] rounded-lg shadow-md text-sm'>
+          <thead className='bg-[#e1e5e9] dark:bg-[#1f2023] text-[#1f2937] dark:text-white text-sm'>
             <tr>
-              <th className="px-4 py-3 text-left text-sm font-semibold">Nombre</th>
-              <th className="px-4 py-3 text-left text-sm font-semibold">Cédula</th>
-              <th className="px-4 py-3 text-left text-sm font-semibold">Sexo</th>
-              <th className="px-4 py-3 text-left text-sm font-semibold">Edad</th>
-              <th className="px-4 py-3 text-left text-sm font-semibold">Fecha de Nacimiento</th>
-              <th className="px-4 py-3"></th>
+              <th className='px-4 py-3 text-left text-sm font-semibold'>
+                Nombre
+              </th>
+              <th className='px-4 py-3 text-left text-sm font-semibold'>
+                Cédula
+              </th>
+              <th className='px-4 py-3 text-left text-sm font-semibold'>
+                Sexo
+              </th>
+              <th className='px-4 py-3 text-left text-sm font-semibold'>
+                Edad
+              </th>
+              <th className='px-4 py-3 text-left text-sm font-semibold'>
+                Fecha de Nacimiento
+              </th>
+              <th className='px-4 py-3'></th>
             </tr>
           </thead>
           <tbody>
             {patients.map((patient) => (
               <tr
                 key={patient.id}
-                className="cursor-pointer border-b border-gray-100 dark:border-gray-700 hover:bg-[#f3f4f6] dark:hover:bg-[#1f2023] transition"
+                className='cursor-pointer border-b border-gray-100 dark:border-gray-700 hover:bg-[#f3f4f6] dark:hover:bg-[#1f2023] transition'
                 onClick={() => openPatientModal(patient)}
               >
-                <td className="px-4 py-3 flex items-center whitespace-nowrap">
-                  <div className="h-10 w-10 flex items-center justify-center rounded-full mr-3 bg-[#a78bfa] dark:bg-[#4f46e5]">
-                    <div className="text-white font-medium">
+                <td className='px-4 py-3 flex items-center whitespace-nowrap'>
+                  <div className='h-10 w-10 flex items-center justify-center rounded-full mr-3 bg-[#a78bfa] dark:bg-[#4f46e5]'>
+                    <div className='text-white font-medium'>
                       {getInitials(patient.nombre)}
                     </div>
                   </div>
-                  <span className=" font-medium">{patient.nombre}</span>
+                  <span className=' font-medium'>{patient.nombre}</span>
                 </td>
-                <td className="px-4 py-3 whitespace-nowrap">{patient.cedula}</td>
-                <td className="px-4 py-3 whitespace-nowrap">{patient.sexo}</td>
-                <td className="px-4 py-3 whitespace-nowrap">{patient.edad}</td>
-                <td className="px-4 py-3 whitespace-nowrap">{formatDate(patient.fecha_nacimiento)}</td>
-                <td className="px-4 py-3 whitespace-nowrap">
-                  <Button className={"w-2/3"}>Ver Historia Clínica</Button>
+                <td className='px-4 py-3 whitespace-nowrap'>
+                  {patient.cedula}
+                </td>
+                <td className='px-4 py-3 whitespace-nowrap'>{patient.sexo}</td>
+                <td className='px-4 py-3 whitespace-nowrap'>{patient.edad}</td>
+                <td className='px-4 py-3 whitespace-nowrap'>
+                  {formatDate(patient.fecha_nacimiento)}
+                </td>
+                <td className='px-4 py-3 whitespace-nowrap'>
+                  {histories.find((h) => h.cedula === patient.cedula) ? (
+                    <Button
+                      className='w-2/3'
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        const existing = histories.find(
+                          (h) => h.cedula === patient.cedula
+                        );
+                        setSelectedHistory(existing);
+                        window.history.pushState({}, "", "/historias");
+                      }}
+                    >
+                      Ver Historia Clínica
+                    </Button>
+                  ) : (
+                    <Button
+                      className='w-2/3'
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setCreatingHistoryFor(patient);
+                        window.history.pushState({}, "", "/medicalhistories");
+                      }}
+                    >
+                      Crear Historia Clínica
+                    </Button>
+                  )}
                 </td>
               </tr>
             ))}
@@ -101,46 +159,89 @@ const Patients = () => {
         </table>
       )}
       {/* Cards para móviles */}
-      <div className="grid grid-cols-1 gap-4 sm:hidden">
+      <div className='grid grid-cols-1 gap-4 sm:hidden'>
         {patients.map((patient) => (
           <div
             key={patient.id}
             onClick={() => openPatientModal(patient)}
-            className="bg-white dark:bg-[#2a2b2f] rounded-lg shadow p-4 border border-gray-200 dark:border-gray-600 cursor-pointer hover:bg-gray-50 dark:hover:bg-[#1f2023] transition"
+            className='bg-white dark:bg-[#2a2b2f] rounded-lg shadow p-4 border border-gray-200 dark:border-gray-600 cursor-pointer hover:bg-gray-50 dark:hover:bg-[#1f2023] transition'
           >
-            <div className="flex items-center gap-4 mb-3">
-              <div className="h-10 w-10 flex items-center justify-center rounded-full bg-[#a78bfa] dark:bg-[#4f46e5] text-white font-semibold">
+            <div className='flex items-center gap-4 mb-3'>
+              <div className='h-10 w-10 flex items-center justify-center rounded-full bg-[#a78bfa] dark:bg-[#4f46e5] text-white font-semibold'>
                 {getInitials(patient.nombre)}
               </div>
               <div>
-                <p className="font-semibold text-gray-800 dark:text-white">
+                <p className='font-semibold text-gray-800 dark:text-white'>
                   {patient.nombre} {patient.apellido}
                 </p>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
+                <p className='text-xs text-gray-500 dark:text-gray-400'>
                   Cédula: {patient.cedula}
                 </p>
               </div>
             </div>
 
-            <div className="text-sm text-gray-700 dark:text-gray-300">
+            <div className='text-sm text-gray-700 dark:text-gray-300'>
               <p>Sexo: {patient.sexo}</p>
               <p>Edad: {patient.edad}</p>
               <p>F. Nac: {formatDate(patient.fecha_nacimiento)}</p>
             </div>
 
-            <div className="mt-4">
-              <Button className="w-full text-sm">Ver Historia Clínica</Button>
+            <div className='mt-4'>
+              {histories.find((h) => h.cedula === patient.cedula) ? (
+                <Button
+                  className='w-full text-sm'
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    const existing = histories.find(
+                      (h) => h.cedula === patient.cedula
+                    );
+                    setSelectedHistory(existing);
+                    window.history.pushState({}, "", "/medicalhistories");
+                  }}
+                >
+                  Ver Historia Clínica
+                </Button>
+              ) : (
+                <Button
+                  className='w-full text-sm'
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setCreatingHistoryFor(patient);
+                    window.history.pushState({}, "", "/medicalhistories");
+                  }}
+                >
+                  Crear Historia Clínica
+                </Button>
+              )}
             </div>
           </div>
         ))}
       </div>
 
       {!loading && !error && patients.length === 0 && (
-        <p className="text-white">No hay pacientes registrados.</p>
+        <p className='text-white'>No hay pacientes registrados.</p>
       )}
 
-      {showModal && patient && <PatientModal patient={patient} onClose={closePatientModal} />}
-      {showNewModal && <NewPatientModal onClose={() => setShowNewModal(false)} />}
+      {showModal && patient && (
+        <PatientModal patient={patient} onClose={closePatientModal} />
+      )}
+      {showNewModal && (
+        <NewPatientModal onClose={() => setShowNewModal(false)} />
+      )}
+
+      {selectedHistory && (
+        <HistoryDetailModal
+          history={selectedHistory}
+          onClose={() => setSelectedHistory(null)}
+        />
+      )}
+
+      {creatingHistoryFor && (
+        <NewHistoryModal
+          onClose={() => setCreatingHistoryFor(null)}
+          prefillCedula={creatingHistoryFor.cedula}
+        />
+      )}
     </div>
   );
 };
