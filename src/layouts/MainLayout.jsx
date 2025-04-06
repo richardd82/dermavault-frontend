@@ -39,11 +39,10 @@ export default function MainLayout() {
         setShowResults(false);
       }
     };
-  
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [showResults]);
-  
 
   const handleSearchChange = (e) => {
     const value = e.target.value;
@@ -88,7 +87,10 @@ export default function MainLayout() {
             </button>
 
             {/* Buscador centrado */}
-            <div className='relative w-full max-w-xl sm:block mx-auto' ref={dropdownRef}>
+            <div
+              className='relative w-full max-w-xl block mx-auto px-2 sm:px-0'
+              ref={dropdownRef}
+            >
               <input
                 type='text'
                 value={patientQuery}
@@ -98,26 +100,30 @@ export default function MainLayout() {
               />
               <FaSearch className='absolute top-2.5 left-3 text-gray-500 dark:text-gray-400' />
 
-              {location.pathname !== "/patients" && showResults && patientResults.length > 0 && (
-                <div className='absolute top-full left-0 mt-1 w-full bg-white dark:bg-[#1a1b1e] border border-gray-200 dark:border-gray-700 rounded-md shadow-lg z-50 max-h-64 overflow-auto'>
-                  {patientResults.map((p) => (
-                    <div
-                      key={p.id}
-                      className='px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-[#2a2b2f] cursor-pointer'
-                      onClick={() => {
-                        setSelectedPatient(p);
-                        clearPatientSearch();
-                        setSearch("");
-                      }}
-                    >
-                      <span className='font-medium'>
-                        {p.nombre} {p.apellido}
-                      </span>{" "}
-                      — <span className='text-gray-500'>{p.cedula}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
+              {/* 👇 SOLO mostramos el dropdown si NO estamos en /patients */}
+              {location.pathname !== "/patients" &&
+                showResults &&
+                patientResults.length > 0 && (
+                  <div className='absolute top-full left-0 mt-1 w-full bg-white dark:bg-[#1a1b1e] border border-gray-200 dark:border-gray-700 rounded-md shadow-lg z-50 max-h-64 overflow-auto'>
+                    {patientResults.map((p) => (
+                      <div
+                        key={p.id}
+                        className='px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-[#2a2b2f] cursor-pointer'
+                        onClick={() => {
+                          setSelectedPatient(p);
+                          clearPatientSearch();
+                          setSearch("");
+                          setShowResults(false); // importante para cerrar el dropdown
+                        }}
+                      >
+                        <span className='font-medium'>
+                          {p.nombre} {p.apellido}
+                        </span>{" "}
+                        — <span className='text-gray-500'>{p.cedula}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
             </div>
           </div>
 
@@ -136,7 +142,7 @@ export default function MainLayout() {
         </header>
 
         {/* === ÁREA DE CONTENIDO === */}
-        <main className='flex-1 overflow-y-auto p-4 md:p-6'>
+        <main className='flex-1 overflow-y-auto pt-0 px-4 md:px-6'>
           <Outlet />
         </main>
       </div>

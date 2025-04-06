@@ -67,7 +67,7 @@ const MedicalHistories = () => {
 
   return (
     <div className='p-4'>
-      <div className='flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4'>
+      <div className='sticky top-[0px] md:top-[0px] z-20 bg-[#f8f9fa] dark:bg-[#1a1b1e] border-b border-gray-200 dark:border-gray-700 pb-2 flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4'>
         <div className='flex flex-col gap-2 w-full sm:w-auto'>
           <h2 className='text-2xl font-bold text-gray-800 dark:text-gray-100'>
             Historias Clínicas

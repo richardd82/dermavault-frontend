@@ -53,6 +53,11 @@ const Patients = () => {
     };
   }, [fetchPatients]);
 
+  useEffect(() => {
+    // Este efecto asegura que cuando cambie la búsqueda, se actualicen los datos visibles
+    // y evita que se quede "congelado" en mobile.
+  }, [patientQuery, patientResults]);
+
   const getInitials = (fullName) => {
     if (!fullName) return "";
     const parts = fullName.split(" ");
@@ -74,16 +79,16 @@ const Patients = () => {
 
   return (
     <div className='p-4'>
-      <div className='flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6'>
-        <h1 className='text-2xl font-bold mb-6 dark:text-[#e5e7eb]'>
-          Pacientes
-        </h1>
-        <button
-          className='bg-[#a78bfa] dark:bg-[#4f46e5] text-white px-4 py-2 rounded-lg hover:opacity-90 transition text-sm w-full sm:w-auto'
-          onClick={() => setShowNewModal(true)}
-        >
-          + Nuevo Paciente
-        </button>
+      <div className='sticky top-[0px] md:top-[0px] z-20 bg-[#f8f9fa] dark:bg-[#1a1b1e] border-b border-gray-200 dark:border-gray-700'>
+        <div className='flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 px-4 pt-4 pb-3'>
+          <h1 className='text-2xl font-bold dark:text-[#e5e7eb]'>Pacientes</h1>
+          <button
+            className='bg-[#a78bfa] dark:bg-[#4f46e5] text-white px-4 py-2 rounded-lg hover:opacity-90 transition text-sm w-full sm:w-auto'
+            onClick={() => setShowNewModal(true)}
+          >
+            + Nuevo Paciente
+          </button>
+        </div>
       </div>
 
       {loading && <p className='text-gray-500'>Cargando pacientes...</p>}
@@ -169,7 +174,7 @@ const Patients = () => {
       )}
       {/* Cards para móviles */}
       <div className='grid grid-cols-1 gap-4 sm:hidden'>
-        {patients.map((patient) => (
+        {dataToShow.map((patient) => (
           <div
             key={patient.id}
             onClick={() => openPatientModal(patient)}
