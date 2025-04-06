@@ -27,7 +27,7 @@ const formatDate = (date) => {
 const MedicalHistories = () => {
   const { histories, getHistories, loading, updateHistory } =
     useMedicalHistoryStore();
-  console.log(histories, "historias desde Fichas Médicas");
+  // console.log(histories, "historias desde Fichas Médicas");
   const {
     historyQuery,
     setHistoryQuery,

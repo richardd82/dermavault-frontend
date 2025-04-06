@@ -72,7 +72,7 @@ const Dashboard = () => {
       {error && <p className="text-red-500">{error}</p>}
 
       {userData ? (
-        <div className="bg-gray-100 p-4 rounded-lg shadow-lg">
+        <div className="bg-gray-100 dark:bg-slate-800 dark:text-white p-4 rounded-lg shadow-lg">
           <p><strong>Usuario:</strong> {userData.username}</p>
           <p><strong>Email:</strong> {userData.email}</p>
           <p><strong>Rol:</strong> {userData.role}</p>
