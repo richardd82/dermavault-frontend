@@ -93,7 +93,7 @@ const NewPatientModal = ({ onClose }) => {
       };
       const res =await createPatient(formattedData);
       if (!res.success) {
-        toast.error("Error al guardar el usuario: " + res.message, {
+        toast.error("Error al guardar el usuario: " + err.response.data.message, {
           duration: 5000,
           style: {
             background: "#4f46e5", // color de fondo

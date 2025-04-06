@@ -24,7 +24,7 @@ const Sidebar = () => {
       <nav className="flex flex-col  mt-5 gap-6 p-4 text-black dark:text-white h-full">
         <Link to="/dashboard" className="p-2 rounded hover:bg-[#a78bfa] dark:hover:bg-[#4f46e5] flex flex-row gap-5 items-center"><AiOutlineHome size={30} /> Inicio</Link>
         <Link to="/patients" className="p-2 rounded hover:bg-[#a78bfa] dark:hover:bg-[#4f46e5] flex flex-row gap-5 items-center"><FiUsers size={30}/> Pacientes</Link>
-        <Link to="#" className="p-2 rounded hover:bg-[#a78bfa] dark:hover:bg-[#4f46e5] flex flex-row gap-5 items-center"><BsWindow size={30}/> Fichas Médicas</Link>
+        <Link to="/medicalHistories" className="p-2 rounded hover:bg-[#a78bfa] dark:hover:bg-[#4f46e5] flex flex-row gap-5 items-center"><BsWindow size={30}/> Fichas Médicas</Link>
         {user?.role === "admin" ? <Link to="/users" className="p-2 rounded hover:bg-[#a78bfa] dark:hover:bg-[#4f46e5] flex flex-row gap-5 items-center"><FaRegUser size={30}/> Usuarios</Link> : null}
       </nav>
 

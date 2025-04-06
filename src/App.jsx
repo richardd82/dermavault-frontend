@@ -8,6 +8,7 @@ import Users from './pages/Users';
 import useThemeStore from './store/themeStore';
 import { useEffect } from 'react';
 import { Toaster } from "react-hot-toast";
+import MedicalHistories from './pages/MedicalHistories';
 
 function App() {
   const { isAuthenticated } = useAuthStore();
@@ -32,6 +33,7 @@ function App() {
           <Route path="/" element={<MainLayout />}>
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="patients" element={<Patients />} />
+            <Route path="medicalhistories" element={<MedicalHistories />} />
             <Route path="users" element={<Users />} />
           </Route>
         )
