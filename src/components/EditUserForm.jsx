@@ -9,7 +9,7 @@ const roles = [
 ];
 
 const EditUserForm = ({ user, onClose }) => {
-  console.log(user);
+  // console.log(user);
   const { updateUser } = useUserStore();
   const [form, setForm] = useState(null);
   const [errors, setErrors] = useState({});
