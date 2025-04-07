@@ -10,6 +10,7 @@ import HistoryDetailModal from "../components/HistoryDetailModal";
 import NewHistoryModal from "../components/NewHistoryModal";
 import useSearchStore from "../store/searchStore";
 
+
 const formatDate = (dateString) => {
   if (!dateString) return "";
   const [year, month, day] = dateString.split("T")[0].split("-"); // fuerza fecha sin zona horaria

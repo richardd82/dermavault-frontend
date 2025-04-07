@@ -29,7 +29,7 @@ const useSearchStore = create((set) => ({
 
     try {
       const res = await api.get(`${API_URL}/patients/search`, { params: { q: query } });
-      console.log(res.data, 'res patients');
+      // console.log(res.data, 'res patients');
       set({ patientResults: res.data, loadingPatients: false });
     } catch (err) {
       set({ errorPatients: err.message, loadingPatients: false });
