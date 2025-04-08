@@ -4,7 +4,7 @@ import usePatientStore from '../store/patientStore';
 import clsx from 'clsx';
 import toast from "react-hot-toast";
 import useSearchStore from '../store/searchStore';
-import { useEffect } from 'react';
+
 
 
 const PatientModal = ({ patient, onClose }) => {
