@@ -10,7 +10,6 @@ import HistoryDetailModal from "../components/HistoryDetailModal";
 import NewHistoryModal from "../components/NewHistoryModal";
 import useSearchStore from "../store/searchStore";
 
-
 const formatDate = (dateString) => {
   if (!dateString) return "";
   const [year, month, day] = dateString.split("T")[0].split("-"); // fuerza fecha sin zona horaria
@@ -35,9 +34,7 @@ const Patients = () => {
     closePatientModal,
   } = usePatientStore();
 
-  const { patientQuery, patientResults, loadingPatients, clearPatientSearch } =
-    useSearchStore();
-
+  const { patientQuery, patientResults, clearPatientSearch } = useSearchStore();
   const [showNewModal, setShowNewModal] = useState(false);
   const [selectedHistory, setSelectedHistory] = useState(null); // Para mostrar el modal con los datos de la historia si ya existe
   const [creatingHistoryFor, setCreatingHistoryFor] = useState(null); // Para crear una historia nueva
@@ -67,14 +64,20 @@ const Patients = () => {
   };
 
   const handleHistoryClick = async (patient) => {
-    const history = await getHistoryByCedula(patient.cedula);
+    try {
+      const result = await getHistoryByCedula(patient.cedula);
 
-    if (history) {
-      setSelectedHistory(history);
-    } else {
-      setCreatingHistoryFor(patient); // abre modal con cédula precargada
+      if (result && result.id) {
+        setSelectedHistory(result);
+      } else {
+        setCreatingHistoryFor(patient);
+      }
+    } catch (error) {
+      console.error("Error al obtener historia clínica:", error);
+      setCreatingHistoryFor(patient);
     }
   };
+
 
   const dataToShow = patientQuery.length > 1 ? patientResults : patients;
 
@@ -141,33 +144,21 @@ const Patients = () => {
                   {formatDate(patient.fecha_nacimiento)}
                 </td>
                 <td className='px-4 py-3 whitespace-nowrap'>
-                  {histories.find((h) => h.cedula === patient.cedula) ? (
-                    <Button
-                      className='w-2/3'
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        const existing = histories.find(
-                          (h) => h.cedula === patient.cedula
-                        );
-                        setSelectedHistory(existing);
-                        window.history.pushState({}, "", "/historias");
-                      }}
-                    >
-                      Ver Historia Clínica
-                    </Button>
-                  ) : (
-                    <Button
-                      className='w-2/3'
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setCreatingHistoryFor(patient);
-                        window.history.pushState({}, "", "/medicalhistories");
-                      }}
-                    >
-                      Crear Historia Clínica
-                    </Button>
-                  )}
+                  <Button
+                    className='w-2/3'
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleHistoryClick(patient);
+                      window.history.pushState({}, "", "/medicalhistories");
+                    }}
+                  >
+                    {histories.find((h) => h.patient_id === patient.id)
+                      ? "Ver Historia Clínica"
+                      : "Crear Historia Clínica"}
+                  </Button>
                 </td>
+
+
               </tr>
             ))}
           </tbody>
@@ -202,32 +193,19 @@ const Patients = () => {
             </div>
 
             <div className='mt-4'>
-              {histories.find((h) => h.cedula === patient.cedula) ? (
-                <Button
-                  className='w-full text-sm'
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    const existing = histories.find(
-                      (h) => h.cedula === patient.cedula
-                    );
-                    setSelectedHistory(existing);
-                    window.history.pushState({}, "", "/medicalhistories");
-                  }}
-                >
-                  Ver Historia Clínica
-                </Button>
-              ) : (
-                <Button
-                  className='w-full text-sm'
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setCreatingHistoryFor(patient);
-                    window.history.pushState({}, "", "/medicalhistories");
-                  }}
-                >
-                  Crear Historia Clínica
-                </Button>
-              )}
+
+              <Button
+                className='w-full text-sm'
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleHistoryClick(patient);
+                  window.history.pushState({}, "", "/medicalhistories");
+                }}
+              >
+                {histories.find((h) => h.patient_id === patient.id)
+                  ? "Ver Historia Clínica"
+                  : "Crear Historia Clínica"}
+              </Button>
             </div>
           </div>
         ))}

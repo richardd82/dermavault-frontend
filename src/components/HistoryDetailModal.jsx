@@ -1,20 +1,28 @@
 // components/HistoryDetailModal.jsx
 import React, { useState } from "react";
 import clsx from "clsx";
+import { useEffect } from "react";
+import useMedicalHistoryStore from "../store/medicalHistoryStore";
+
 
 //Maneja los valores de las historias clínicas en modo View y muestra inputs en modo Edit
 const LabelValue = ({ label, value, editMode, name, onChange }) => (
-  <div className="grid grid-cols-2 gap-4 items-center py-1 border-b border-gray-200 dark:border-gray-700">
-    <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+  <div className="grid grid-cols-2 gap-4 items-start py-1 border-b border-gray-200 dark:border-gray-700">
+    <label className="text-sm font-medium text-gray-700 dark:text-gray-300 pt-1">
       {label}
     </label>
     {editMode ? (
-      <input
-        type="text"
+      <textarea
         name={name}
         value={value || ""}
         onChange={onChange}
-        className="text-sm border bg-slate-100 border-gray-600 dark:border-gray-600 rounded-md px-2 py-1 dark:bg-gray-800 text-gray-900 dark:text-white w-full"
+        rows={1}
+        className="text-sm border border-gray-300 dark:border-gray-600 rounded-md px-2 py-1 bg-white dark:bg-gray-800 text-gray-900 dark:text-white w-full resize-none overflow-hidden"
+        style={{ minHeight: "2.5rem" }}
+        onInput={(e) => {
+          e.target.style.height = "auto";
+          e.target.style.height = `${e.target.scrollHeight}px`;
+        }}
       />
     ) : (
       <span className="text-sm text-gray-900 dark:text-gray-100">
@@ -24,9 +32,11 @@ const LabelValue = ({ label, value, editMode, name, onChange }) => (
   </div>
 );
 
+
 const HistoryDetailModal = ({ history, onClose }) => {
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({ ...history });
+  const { updateHistory } = useMedicalHistoryStore();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -36,7 +46,38 @@ const HistoryDetailModal = ({ history, onClose }) => {
     }));
   };
 
+  useEffect(() => {
+    if (editMode) {
+      // Ajustar todos los textareas al contenido existente
+      const textareas = document.querySelectorAll("textarea");
+      textareas.forEach((ta) => {
+        ta.style.height = "auto";
+        ta.style.height = `${ta.scrollHeight}px`;
+      });
+    }
+  }, [editMode]);
+
   const { Patient, ClinicalData, Allergy, GeneralMedicalHistory, Diagnosis, EvolutionDates } = formData;
+
+  const handleSave = async () => {
+    const { id } = history; // ID de la historia clínica
+
+    const payload = {
+      clinical_data: formData.ClinicalData,
+      allergies: formData.Allergy,
+      general_history: formData.GeneralMedicalHistory,
+      diagnosis: formData.Diagnosis,
+      evolutions: formData.EvolutionDates
+    };
+
+    try {
+      await updateHistory(id, payload); // tu función del store
+      setEditMode(false);
+    } catch (error) {
+      console.error("Error al guardar cambios:", error);
+    }
+  };
+
 
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
@@ -47,14 +88,15 @@ const HistoryDetailModal = ({ history, onClose }) => {
           </h2>
           <div className="space-x-2">
             <button
-              onClick={() => setEditMode(!editMode)}
+              onClick={editMode ? handleSave : () => setEditMode(true)}
               className={clsx(
                 "px-4 py-2 rounded-md text-white",
-                editMode ? "bg-[#a78bfa] dark:bg-[#4f46e5]" : "bg-[#a78bfa] dark:bg-[#4f46e5]"
+                "bg-[#a78bfa] dark:bg-[#4f46e5]"
               )}
             >
               {editMode ? "Guardar" : "Editar"}
             </button>
+
             <button
               onClick={onClose}
               className="text-sm text-gray-600 dark:text-gray-300 hover:underline"
@@ -190,7 +232,7 @@ const HistoryDetailModal = ({ history, onClose }) => {
               Fechas de Evolución
             </h3>
             {Array.isArray(EvolutionDates) && EvolutionDates.length > 0 ? (
-              EvolutionDates.map((evo, i) => (
+              EvolutionDates.map((evo) => (
                 <LabelValue
                   key={evo.id}
                   label={new Date(evo.date).toLocaleDateString("es-MX")}
@@ -212,118 +254,7 @@ const HistoryDetailModal = ({ history, onClose }) => {
 
 export default HistoryDetailModal;
 
-// import React from "react";
-// import LabelValue from "../components/LabelValue"; // Asegúrate de tener este componente creado
-// import clsx from "clsx";
-
-// const HistoryDetailModal = ({ history, onClose }) => {
-//   const {
-//     Patient,
-//     ClinicalData,
-//     Allergy,
-//     GeneralMedicalHistory,
-//     Diagnosis,
-//     EvolutionDates,
-//   } = history;
-
-//   return (
-//     <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center px-4">
-//       <div className="bg-white dark:bg-[#1a1b1e] rounded-xl shadow-xl max-w-4xl w-full p-6 space-y-6 overflow-y-auto max-h-[90vh]">
-//         <div className="flex justify-between items-center">
-//           <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Detalle de Historia Clínica</h2>
-//           <button
-//             onClick={onClose}
-//             className={clsx(
-//               'bg-[#a78bfa] dark:bg-[#4f46e5]',
-//               'text-white px-4 py-2 rounded-md text-sm hover:opacity-90 transition'
-//             )}
-//           >
-//             Cerrar
-//           </button>
-//         </div>
-
-//         {/* Sección: Paciente */}
-//         <div className="border-t border-gray-300 dark:border-gray-600 pt-4">
-//           <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Paciente</h3>
-//           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-//             <LabelValue label="Nombre" value={`${Patient?.nombre} ${Patient?.apellido}`} />
-//             <LabelValue label="Cédula" value={Patient?.cedula} />
-//             <LabelValue label="Correo" value={Patient?.email} />
-//             <LabelValue label="Teléfono móvil" value={Patient?.telefono_movil} />
-//           </div>
-//         </div>
-
-//         {/* Sección: Datos Clínicos */}
-//         <div className="border-t border-gray-300 dark:border-gray-600 pt-4">
-//           <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Datos Clínicos</h3>
-//           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-//             <LabelValue label="Padecimiento actual" value={ClinicalData?.padecimiento_actual} />
-//             <LabelValue label="Antecedentes heredofamiliares" value={ClinicalData?.antecedentes_heredofamiliares} />
-//             <LabelValue label="Antecedentes personales" value={ClinicalData?.antecedentes_personales} />
-//             <LabelValue label="Resto de aparatos y sistemas" value={ClinicalData?.resto_aparatos_sistemas} />
-//             <LabelValue label="Tendencia a queloides" value={ClinicalData?.cicatrices_queloides} />
-//             <LabelValue label="Tensión arterial" value={ClinicalData?.tension_arterial} />
-//             <LabelValue label="Sangrado o hematomas" value={ClinicalData?.sangrado_hematomas} />
-//             <LabelValue label="Ciclo menstrual" value={ClinicalData?.ciclo_menstrual} />
-//             <LabelValue label="Tabaquismo" value={ClinicalData?.tabaquismo} />
-//             <LabelValue label="Alcoholismo" value={ClinicalData?.alcoholismo} />
-//             <LabelValue label="Problemas emocionales" value={ClinicalData?.problemas_emocionales} />
-//           </div>
-//         </div>
-
-//         {/* Sección: Alergias */}
-//         <div className="border-t border-gray-300 dark:border-gray-600 pt-4">
-//           <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Alergias</h3>
-//           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-//             <LabelValue label="Analgésicos" value={Allergy?.analgesicos} />
-//             <LabelValue label="Anestésicos" value={Allergy?.anestesicos} />
-//             <LabelValue label="Yodo" value={Allergy?.yodo} />
-//             <LabelValue label="Adhesivos" value={Allergy?.adhesivos} />
-//             <LabelValue label="Material de sutura" value={Allergy?.material_sutura} />
-//             <LabelValue label="Otros" value={Allergy?.otros} />
-//           </div>
-//         </div>
-
-//         {/* Sección: Historia Médica General */}
-//         <div className="border-t border-gray-300 dark:border-gray-600 pt-4">
-//           <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Historia Médica General</h3>
-//           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-//             <LabelValue label="Topografía" value={GeneralMedicalHistory?.topografia} />
-//             <LabelValue label="Morfología" value={GeneralMedicalHistory?.morfologia} />
-//             <LabelValue label="Resto de piel y anexos" value={GeneralMedicalHistory?.resto_piel_anexos} />
-//           </div>
-//         </div>
-
-//         {/* Sección: Diagnóstico */}
-//         <div className="border-t border-gray-300 dark:border-gray-600 pt-4">
-//           <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Diagnóstico</h3>
-//           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-//             <LabelValue label="Diagnóstico principal" value={Diagnosis?.diagnostico_principal} />
-//             <LabelValue label="Otros diagnósticos" value={Diagnosis?.otros_diagnosticos} />
-//           </div>
-//         </div>
-
-//         {/* Sección: Fechas de Evolución */}
-//         <div className="border-t border-gray-300 dark:border-gray-600 pt-4">
-//           <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Fechas de Evolución</h3>
-//           {EvolutionDates?.length > 0 ? (
-//             <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
-//               {EvolutionDates.map((evo) => (
-//                 <li key={evo.id}>
-//                   <span className="font-semibold">
-//                     {new Date(evo.date).toLocaleDateString("es-MX")}:
-//                   </span>{" "}
-//                   {evo.observation || "Vacío"}
-//                 </li>
-//               ))}
-//             </ul>
-//           ) : (
-//             <p className="text-sm text-gray-500">No hay registros.</p>
-//           )}
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default HistoryDetailModal;
+// Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci dolore voluptas corrupti et ea ratione dicta pariatur! Consequatur in quo veniam placeat cumque culpa dignissimos neque, necessitatibus quas sunt, molestiae velit omnis impedit voluptatum corrupti ipsam quis possimus, doloremque ut. Natus facere quasi odio hic voluptate quam incidunt ducimus commodi, quidem itaque aut explicabo nulla similique temporibus iure magni voluptatibus! Vero, hic illo impedit blanditiis enim voluptates ut! Ut quia facere, eum numquam cum cumque officiis vel hic repellat consectetur praesentium reprehenderit id, mollitia neque voluptate harum fugit aperiam modi molestias eveniet dolore expedita. Accusantium, totam? Quam voluptatum eum saepe.
+// Lorem ipsum dolor sit amet consectetur adipisicing elit. Saepe rerum laboriosam commodi harum vitae voluptatum magnam incidunt sint adipisci eveniet debitis, eum ex fugiat nemo labore, voluptate, delectus eos soluta recusandae natus consequuntur? Laboriosam numquam quam quo dolores obcaecati tempora illum laborum. Ut ex explicabo cumque voluptas velit recusandae quibusdam?
+// Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sint, reprehenderit? Incidunt, aspernatur totam inventore laborum consequuntur nostrum nobis, dolorum assumenda aliquam ullam eum voluptatem velit?
+// Lorem ipsum dolor sit amet consectetur adipisicing elit. Laboriosam, aliquam?

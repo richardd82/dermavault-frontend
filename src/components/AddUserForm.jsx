@@ -3,7 +3,7 @@ import useUserStore from "../store/userStore";
 import toast from "react-hot-toast";
 
 
-const roles = ["Admin", "Doctor", "Assistant"];
+const roles = ["Admin", "Médico", "Assistant"];
 
 const AddUserForm = ({ onClose }) => {
   const { addUser } = useUserStore();

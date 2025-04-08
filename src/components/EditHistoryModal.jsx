@@ -25,7 +25,7 @@ const EditHistoryModal = ({ history, onClose }) => {
       toast.success("Historia actualizada");
       onClose();
     } catch (err) {
-      toast.error("Error al actualizar");
+      toast.error("Error al actualizar" + err.message);
     }
   };
 
@@ -39,10 +39,15 @@ const EditHistoryModal = ({ history, onClose }) => {
             <label className="text-sm text-gray-700 dark:text-gray-300">Padecimiento actual</label>
             <textarea
               name="padecimiento_actual"
-              className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+              className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 resize-none overflow-hidden w-full text-sm"
               value={formData.padecimiento_actual}
               onChange={handleChange}
+              onInput={(e) => {
+                e.target.style.height = 'auto';
+                e.target.style.height = `${e.target.scrollHeight}px`;
+              }}
             />
+
           </div>
 
           <div className="flex justify-end gap-2">

@@ -25,15 +25,13 @@ const formatDate = (date) => {
 };
 
 const MedicalHistories = () => {
-  const { histories, getHistories, loading, updateHistory } =
+  const { histories, getHistories, loading } =
     useMedicalHistoryStore();
   // console.log(histories, "historias desde Fichas Médicas");
   const {
     historyQuery,
     setHistoryQuery,
-    historyResults,
     searchHistories,
-    clearHistorySearch,
   } = useSearchStore();
 
   const [showNewModal, setShowNewModal] = useState(false);
@@ -42,17 +40,17 @@ const MedicalHistories = () => {
 
   useEffect(() => {
     getHistories();
-  }, []);
+  }, [getHistories]);
 
-  const handleSearchChange = (e) => {
-    setQuery(e.target.value);
-  };
+  // const handleSearchChange = (e) => {
+  //   setQuery(e.target.value);
+  // };
 
-  const normalizeText = (text) =>
-    text
-      ?.normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .toLowerCase();
+  // const normalizeText = (text) =>
+  //   text
+  //     ?.normalize("NFD")
+  //     .replace(/[\u0300-\u036f]/g, "")
+  //     .toLowerCase();
 
       const filteredHistories = histories.filter((history) => {
         const search = historyQuery?.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");

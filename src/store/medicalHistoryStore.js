@@ -1,8 +1,8 @@
 // store/medicalHistoryStore.js
-import { create } from 'zustand';
-import api from '../hooks/axiosConfig';
+import { create } from "zustand";
+import api from "../hooks/axiosConfig";
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 
 const useMedicalHistoryStore = create((set, get) => ({
   histories: [],
@@ -13,6 +13,7 @@ const useMedicalHistoryStore = create((set, get) => ({
     try {
       set({ loading: true });
       const res = await api.get(`${API_URL}/histories`);
+      // console.log("Historias recibidas:", res.data.data);
       set({ histories: res.data.data, loading: false });
     } catch (error) {
       set({ error: error.message, loading: false });
@@ -43,9 +44,14 @@ const useMedicalHistoryStore = create((set, get) => ({
       const res = await api.get(`/histories/cedula/${cedula}`);
       return res.data;
     } catch (err) {
-      return null; // No hay historia
+      return err; // No hay historia
     }
-  }
+  },
+
+selectedHistory: null,
+setSelectedHistory: (history) => set({ selectedHistory: history }),
+clearSelectedHistory: () => set({ selectedHistory: null }),
+
 }));
 
 export default useMedicalHistoryStore;
