@@ -55,7 +55,7 @@ export default function MainLayout() {
     setShowResults(value.length >= 2); // Mostrar solo si hay al menos 2 caracteres
     searchPatients(value);
   };
-
+  if (!user) return null;
   return (
     <div
       className={`flex h-screen bg-[#f8f9fa] text-[#1f2937] dark:bg-[#1a1b1e] dark:text-[#e5e7eb] transition-colors duration-500 ${theme}`}
