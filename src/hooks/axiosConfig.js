@@ -1,12 +1,11 @@
-// axiosConfig.js
 import axios from "axios";
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+import useAuthStore from "../store/authStore";
 
 const api = axios.create({
-  baseURL: API_URL,
+  baseURL: import.meta.env.VITE_API_URL || "http://localhost:3000/api",
 });
 
+// 👉 Interceptor de request (envía token)
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");
@@ -16,6 +15,19 @@ api.interceptors.request.use(
     return config;
   },
   (error) => Promise.reject(error)
+);
+
+// 👉 Interceptor de response (detecta 401 y redirige)
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      const authStore = useAuthStore.getState();
+      authStore.logout();
+      window.location.href = "/";
+    }
+    return Promise.reject(error);
+  }
 );
 
 export default api;
