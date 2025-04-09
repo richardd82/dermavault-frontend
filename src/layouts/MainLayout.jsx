@@ -1,9 +1,8 @@
 import { useState, useEffect, useRef } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import useAuthStore from "../store/authStore";
 import useThemeStore from "../store/themeStore";
 import useSearchStore from "../store/searchStore";
-import { useDebounce } from "../hooks/useDebounce";
 import { useLocation } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import ThemeToggle from "../components/ThemeToggle";
@@ -16,17 +15,17 @@ export default function MainLayout() {
   const { theme } = useThemeStore();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
-  const [search, setSearch] = useState("");
-  const debounced = useDebounce(search, 300);
+  const [setSearch] = useState("");
+  
   const {
     patientQuery,
     setQuery,
     searchPatients,
     clearPatientSearch,
     clearSelectedPatient,
-    patientResults,
-    loadingPatients,
+    patientResults,    
     selectedPatient,
     setSelectedPatient,
   } = useSearchStore();
@@ -43,6 +42,12 @@ export default function MainLayout() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [showResults]);
+
+  useEffect(() => {
+    if (!user) {
+      navigate("/");
+    }
+  }, [user, navigate]);
 
   const handleSearchChange = (e) => {
     const value = e.target.value;
