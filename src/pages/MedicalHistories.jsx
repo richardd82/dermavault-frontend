@@ -42,34 +42,28 @@ const MedicalHistories = () => {
     getHistories();
   }, [getHistories]);
 
-  // const handleSearchChange = (e) => {
-  //   setQuery(e.target.value);
-  // };
+  const isSearching = historyQuery.trim().length >= 2;
 
-  // const normalizeText = (text) =>
-  //   text
-  //     ?.normalize("NFD")
-  //     .replace(/[\u0300-\u036f]/g, "")
-  //     .toLowerCase();
+  const filteredHistories = histories.filter((history) => {
+    const search = historyQuery?.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    const fullName = `${history?.Patient?.nombre || ""} ${history?.Patient?.apellido || ""}`
+      .toLowerCase()
+      .normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    const cedula = history.Patient?.cedula?.toLowerCase() || "";
+    const padecimiento = history.ClinicalData?.padecimiento_actual?.toLowerCase() || "";
 
-      const filteredHistories = histories.filter((history) => {
-        const search = historyQuery?.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-        const fullName = `${history?.Patient?.nombre || ""} ${history?.Patient?.apellido || ""}`
-          .toLowerCase()
-          .normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-        const cedula = history.Patient?.cedula?.toLowerCase() || "";
-        const padecimiento = history.ClinicalData?.padecimiento_actual?.toLowerCase() || "";
-      
-        return fullName.includes(search) || cedula.includes(search) || padecimiento.includes(search);
-      });
+    return fullName.includes(search) || cedula.includes(search) || padecimiento.includes(search);
+  });
 
   return (
     <div className='p-4'>
-      <div className='sticky top-[0px] md:top-[0px] z-20 bg-[#f8f9fa] dark:bg-[#1a1b1e] border-b border-gray-200 dark:border-gray-700 pb-2 flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4'>
-        <div className='flex flex-col gap-2 w-full sm:w-auto'>
+      <div className='sticky top-[0px] md:top-[0px] z-20 bg-[#f8f9fa] dark:bg-[#1a1b1e] border-b border-gray-200 dark:border-gray-700 pb-2 flex flex-col sm:flex-row justify-center items-start sm:items-center mb-6'>
+        <div className='flex flex-row w-full sm:w-auto items-center gap-36'>
           <h2 className='text-2xl font-bold text-gray-800 dark:text-gray-100'>
             Historias Clínicas
           </h2>
+
+
           <input
             type='text'
             placeholder='Buscar por nombre, cédula o padecimiento'
@@ -81,14 +75,17 @@ const MedicalHistories = () => {
             }}
             className='w-full sm:w-96 px-3 py-2 border rounded-md bg-white dark:bg-[#2a2b2f] text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600'
           />
+          <p className="text-1xl font-bold text-gray-600 dark:text-gray-300 mt-2">
+            Mostrando {filteredHistories.length} {filteredHistories.length === 1 ? 'registro' : 'registros'}{isSearching && ` para "${historyQuery}"`}
+          </p>
+          <button
+            onClick={() => setShowNewModal(true)}
+            className='bg-[#a78bfa] dark:bg-[#4f46e5] text-white px-4 py-2 rounded-md text-sm hover:opacity-90 transition'
+          >
+            + Nueva Historia
+          </button>
         </div>
 
-        <button
-          onClick={() => setShowNewModal(true)}
-          className='bg-[#a78bfa] dark:bg-[#4f46e5] text-white px-4 py-2 rounded-md text-sm hover:opacity-90 transition'
-        >
-          + Nueva Historia
-        </button>
       </div>
 
       {loading && (

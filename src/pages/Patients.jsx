@@ -43,6 +43,10 @@ const Patients = () => {
 
   // console.log(patients, "<================PACIENTES");
 
+  const total = patientQuery.trim()
+    ? patientResults.length
+    : patients.length;
+
   useEffect(() => {
     fetchPatients();
     getHistories();
@@ -86,6 +90,9 @@ const Patients = () => {
       <div className='sticky top-[0px] md:top-[0px] z-20 bg-[#f8f9fa] dark:bg-[#1a1b1e] border-b border-gray-200 dark:border-gray-700'>
         <div className='flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 px-4 pt-4 pb-3'>
           <h1 className='text-2xl font-bold dark:text-[#e5e7eb]'>Pacientes</h1>
+          <p className="text-1xl font-bold text-gray-600 dark:text-gray-300 mt-2">
+            Mostrando {total} {total === 1 ? 'registro' : 'registros'}{patientQuery && ` para "${patientQuery}"`}
+          </p>
           <button
             className='bg-[#a78bfa] dark:bg-[#4f46e5] text-white px-4 py-2 rounded-lg hover:opacity-90 transition text-sm w-full sm:w-auto'
             onClick={() => setShowNewModal(true)}
@@ -99,70 +106,72 @@ const Patients = () => {
       {error && <p className='text-red-500'>Error: {error}</p>}
 
       {!loading && !error && patients.length > 0 && (
-        <table className='hidden sm:table min-w-[700px] w-full bg-white dark:bg-[#2a2b2f] rounded-lg shadow-md text-sm'>
-          <thead className='bg-[#e1e5e9] dark:bg-[#1f2023] text-[#1f2937] dark:text-white text-sm'>
-            <tr>
-              <th className='px-4 py-3 text-left text-sm font-semibold'>
-                Nombre
-              </th>
-              <th className='px-4 py-3 text-left text-sm font-semibold'>
-                Cédula
-              </th>
-              <th className='px-4 py-3 text-left text-sm font-semibold'>
-                Sexo
-              </th>
-              <th className='px-4 py-3 text-left text-sm font-semibold'>
-                Edad
-              </th>
-              <th className='px-4 py-3 text-left text-sm font-semibold'>
-                Fecha de Nacimiento
-              </th>
-              <th className='px-4 py-3'></th>
-            </tr>
-          </thead>
-          <tbody>
-            {dataToShow.map((patient) => (
-              <tr
-                key={patient.id}
-                className='cursor-pointer border-b border-gray-100 dark:border-gray-700 hover:bg-[#f3f4f6] dark:hover:bg-[#1f2023] transition'
-                onClick={() => openPatientModal(patient)}
-              >
-                <td className='px-4 py-3 flex items-center whitespace-nowrap'>
-                  <div className='h-10 w-10 flex items-center justify-center rounded-full mr-3 bg-[#a78bfa] dark:bg-[#4f46e5]'>
-                    <div className='text-white font-medium'>
-                      {getInitials(patient.nombre)}
-                    </div>
-                  </div>
-                  <span className=' font-medium'>{patient.nombre}</span>
-                </td>
-                <td className='px-4 py-3 whitespace-nowrap'>
-                  {patient.cedula}
-                </td>
-                <td className='px-4 py-3 whitespace-nowrap'>{patient.sexo}</td>
-                <td className='px-4 py-3 whitespace-nowrap'>{patient.edad}</td>
-                <td className='px-4 py-3 whitespace-nowrap'>
-                  {formatDate(patient.fecha_nacimiento)}
-                </td>
-                <td className='px-4 py-3 whitespace-nowrap'>
-                  <Button
-                    className='w-2/3'
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleHistoryClick(patient);
-                      window.history.pushState({}, "", "/medicalhistories");
-                    }}
-                  >
-                    {histories.find((h) => h.patient_id === patient.id)
-                      ? "Ver Historia Clínica"
-                      : "Crear Historia Clínica"}
-                  </Button>
-                </td>
-
-
+        <div className="overflow-y-auto max-h-[80vh]">
+          <table className='hidden sm:table min-w-[700px] w-full bg-white dark:bg-[#2a2b2f] rounded-lg shadow-md text-sm'>
+            <thead className='sticky top-0 z-10 bg-[#e1e5e9] dark:bg-[#1f2023] text-[#1f2937] dark:text-white text-sm'>
+              <tr>
+                <th className='px-4 py-3 text-left text-sm font-semibold'>
+                  Nombre
+                </th>
+                <th className='px-4 py-3 text-left text-sm font-semibold'>
+                  Cédula
+                </th>
+                <th className='px-4 py-3 text-left text-sm font-semibold'>
+                  Sexo
+                </th>
+                <th className='px-4 py-3 text-left text-sm font-semibold'>
+                  Edad
+                </th>
+                <th className='px-4 py-3 text-left text-sm font-semibold'>
+                  Fecha de Nacimiento
+                </th>
+                <th className='px-4 py-3'></th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {dataToShow.map((patient) => (
+                <tr
+                  key={patient.id}
+                  className='cursor-pointer border-b border-gray-100 dark:border-gray-700 hover:bg-[#f3f4f6] dark:hover:bg-[#1f2023] transition'
+                  onClick={() => openPatientModal(patient)}
+                >
+                  <td className='px-4 py-3 flex items-center whitespace-nowrap'>
+                    <div className='h-10 w-10 flex items-center justify-center rounded-full mr-3 bg-[#a78bfa] dark:bg-[#4f46e5]'>
+                      <div className='text-white font-medium'>
+                        {getInitials(patient.nombre)}
+                      </div>
+                    </div>
+                    <span className=' font-medium'>{patient.nombre}</span>
+                  </td>
+                  <td className='px-4 py-3 whitespace-nowrap'>
+                    {patient.cedula}
+                  </td>
+                  <td className='px-4 py-3 whitespace-nowrap'>{patient.sexo}</td>
+                  <td className='px-4 py-3 whitespace-nowrap'>{patient.edad}</td>
+                  <td className='px-4 py-3 whitespace-nowrap'>
+                    {formatDate(patient.fecha_nacimiento)}
+                  </td>
+                  <td className='px-4 py-3 whitespace-nowrap'>
+                    <Button
+                      className='w-2/3'
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleHistoryClick(patient);
+                        window.history.pushState({}, "", "/medicalhistories");
+                      }}
+                    >
+                      {histories.find((h) => h.patient_id === patient.id)
+                        ? "Ver Historia Clínica"
+                        : "Crear Historia Clínica"}
+                    </Button>
+                  </td>
+
+
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
       {/* Cards para móviles */}
       <div className='grid grid-cols-1 gap-4 sm:hidden'>
