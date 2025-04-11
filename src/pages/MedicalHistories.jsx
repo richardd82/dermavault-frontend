@@ -25,14 +25,9 @@ const formatDate = (date) => {
 };
 
 const MedicalHistories = () => {
-  const { histories, getHistories, loading } =
-    useMedicalHistoryStore();
+  const { histories, getHistories, loading } = useMedicalHistoryStore();
   // console.log(histories, "historias desde Fichas Médicas");
-  const {
-    historyQuery,
-    setHistoryQuery,
-    searchHistories,
-  } = useSearchStore();
+  const { historyQuery, setHistoryQuery, searchHistories } = useSearchStore();
 
   const [showNewModal, setShowNewModal] = useState(false);
   const [editingHistory, setEditingHistory] = useState(null);
@@ -45,14 +40,25 @@ const MedicalHistories = () => {
   const isSearching = historyQuery.trim().length >= 2;
 
   const filteredHistories = histories.filter((history) => {
-    const search = historyQuery?.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-    const fullName = `${history?.Patient?.nombre || ""} ${history?.Patient?.apellido || ""}`
+    const search = historyQuery
+      ?.toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "");
+    const fullName = `${history?.Patient?.nombre || ""} ${
+      history?.Patient?.apellido || ""
+    }`
       .toLowerCase()
-      .normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "");
     const cedula = history.Patient?.cedula?.toLowerCase() || "";
-    const padecimiento = history.ClinicalData?.padecimiento_actual?.toLowerCase() || "";
+    const padecimiento =
+      history.ClinicalData?.padecimiento_actual?.toLowerCase() || "";
 
-    return fullName.includes(search) || cedula.includes(search) || padecimiento.includes(search);
+    return (
+      fullName.includes(search) ||
+      cedula.includes(search) ||
+      padecimiento.includes(search)
+    );
   });
 
   return (
@@ -62,7 +68,6 @@ const MedicalHistories = () => {
           <h2 className='text-2xl font-bold text-gray-800 dark:text-gray-100'>
             Historias Clínicas
           </h2>
-
 
           <input
             type='text'
@@ -75,8 +80,10 @@ const MedicalHistories = () => {
             }}
             className='w-full sm:w-96 px-3 py-2 border rounded-md bg-white dark:bg-[#2a2b2f] text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600'
           />
-          <p className="text-1xl font-bold text-gray-600 dark:text-gray-300 mt-2">
-            Mostrando {filteredHistories.length} {filteredHistories.length === 1 ? 'registro' : 'registros'}{isSearching && ` para "${historyQuery}"`}
+          <p className='text-1xl font-bold text-gray-600 dark:text-gray-300 mt-2'>
+            Mostrando {filteredHistories.length}{" "}
+            {filteredHistories.length === 1 ? "registro" : "registros"}
+            {isSearching && ` para "${historyQuery}"`}
           </p>
           <button
             onClick={() => setShowNewModal(true)}
@@ -85,14 +92,13 @@ const MedicalHistories = () => {
             + Nueva Historia
           </button>
         </div>
-
       </div>
 
       {loading && (
         <p className='text-gray-500 dark:text-gray-400'>Cargando...</p>
       )}
 
-      <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
+      <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl1:grid-cols-4 gap-6'>
         {filteredHistories.map((history) => (
           <div
             key={history.id}

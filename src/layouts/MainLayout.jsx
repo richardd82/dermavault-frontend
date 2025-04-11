@@ -73,7 +73,7 @@ export default function MainLayout() {
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         } md:translate-x-0 md:static md:flex md:flex-col justify-end`}
       >
-        <div className='flex items-center gap-4 h-[72px] md:h-[80px] p-4 text-xl font-bold bg-[#a78bfa] dark:bg-[#4f46e5] text-white'>
+        <div className='flex items-center gap-4 h-[72px] md:h-[80px] p-4 text-xl font-bold bg-[#a78bfa] dark:bg-[#4f46e5] text-white md:w-[100%] md:gap-0'>
           <img src={logoImg} alt='Logo DermaVault' className='w-12 h-12' />
           DermaVault
         </div>
@@ -81,7 +81,7 @@ export default function MainLayout() {
       </aside>
 
       <div className='flex flex-col flex-1'>
-        <header className='flex flex-wrap items-center justify-between gap-4 px-4 py-3 md:px-6 md:py-4 bg-white dark:bg-[#2a2b2f] border-b border-gray-200 dark:border-gray-700'>
+        <header className='flex flex-wrap items-center justify-between gap-4 px-4 py-3 md:px-16 md:py-4 bg-white dark:bg-[#2a2b2f] border-b border-gray-200 dark:border-gray-700'>
           {/* === Izquierda: Botón + Buscador === */}
           <div className='flex-1 flex items-center gap-4'>
             <button
@@ -147,7 +147,7 @@ export default function MainLayout() {
         </header>
 
         {/* === ÁREA DE CONTENIDO === */}
-        <main className='flex-1 overflow-y-auto pt-0 px-4 md:px-6'>
+        <main className='flex-1 overflow-y-auto pt-0 px-4 md:px-[0px] max-w-screen-xl mx-auto min-h-[calc(100vh-80px)]'>
           <Outlet />
         </main>
       </div>

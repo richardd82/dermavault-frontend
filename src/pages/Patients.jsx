@@ -106,7 +106,7 @@ const Patients = () => {
       {error && <p className='text-red-500'>Error: {error}</p>}
 
       {!loading && !error && patients.length > 0 && (
-        <div className="overflow-y-auto max-h-[80vh]">
+        <div className="overflow-y-auto max-h-[79vh]">
           <table className='hidden sm:table min-w-[700px] w-full bg-white dark:bg-[#2a2b2f] rounded-lg shadow-md text-sm'>
             <thead className='sticky top-0 z-10 bg-[#e1e5e9] dark:bg-[#1f2023] text-[#1f2937] dark:text-white text-sm'>
               <tr>
