@@ -178,7 +178,7 @@ const Patients = () => {
         </div>
       )}
       {/* Cards para móviles */}
-      <div className='grid grid-cols-1 gap-4 md:hidden overflow-y-auto h-[calc(100dvh-180px)] px-2 pb-4'>
+      <div className='grid grid-cols-1 mt-2 gap-4 md:hidden overflow-y-auto h-[calc(100dvh-235px)] md:h-[calc(100dvh-180px)] px-2 pb-4'>
         {dataToShow.map((patient) => (
           <div
             key={patient.id}
