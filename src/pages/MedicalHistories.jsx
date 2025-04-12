@@ -105,7 +105,7 @@ const MedicalHistories = () => {
         <p className='text-gray-500 dark:text-gray-400'>Cargando...</p>
       )}
 
-      <div className='overflow-y-auto max-h-[calc(100vh-180px)] pr-6 pl-7 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-4 gap-4 mt-4'>
+      <div className='overflow-y-auto max-h-[calc(100vh-305px)] lg:max-h-[calc(100vh-180px)] pr-6 pl-7 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4 mt-4'>
         {filteredHistories.map((history) => (
           <div
             key={history.id}
