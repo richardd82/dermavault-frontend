@@ -24,6 +24,8 @@ api.interceptors.response.use(
     if (error.response?.status === 401) {
       const authStore = useAuthStore.getState();
       authStore.logout();
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
       window.location.href = "/";
     }
     return Promise.reject(error);
