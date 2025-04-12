@@ -66,7 +66,7 @@ const Dashboard = () => {
   };
 //className="min-h-screen flex flex-col items-center justify-center"
   return (
-    <div className='mt-10'>
+    <div className='mt-10 justify-center items-center'>
       <h1 className="text-3xl font-bold mb-4">Bienvenido, {`${user?.first_name} ${user?.last_name}`}</h1>
 
       {error && <p className="text-red-500">{error}</p>}

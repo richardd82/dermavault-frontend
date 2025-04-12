@@ -72,7 +72,7 @@ export default function MainLayout() {
         ${sidebarOpen ? "translate-x-0" : "-translate-x-full"
           } md:translate-x-0 md:static md:flex md:flex-col justify-end`}
       >
-        <div className='flex items-center h-[72px] md:h-[80px] px-3 text-xl md:text-lg font-bold bg-[#a78bfa] dark:bg-[#4f46e5] text-white w-full'>
+        <div className='flex items-center h-[72px] md:h-[94px] px-3 text-xl md:text-lg font-bold bg-[#a78bfa] dark:bg-[#4f46e5] text-white w-full'>
           <div className='w-16 h-[37px] scale-150 overflow-hidden mr-2'>
             <img
               src={logoImg}
@@ -155,7 +155,7 @@ export default function MainLayout() {
         </header>
 
         {/* === ÁREA DE CONTENIDO === */}
-        <main className='flex-1 pt-0 px-4 md:px-[0px] w-full sm:max-w-screen-xl mx-auto min-h-[calc(100vh-80px)] md:w-3/3 2xl:w-screen'>
+        <main className='pt-0 px-4 md:px-[0px] sm:max-w-screen-xl mx-auto min-h-[calc(100vh-80px)] md:w-3/3 2xl:w-screen '>
           <Outlet />
         </main>
       </div>
