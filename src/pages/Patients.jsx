@@ -86,7 +86,7 @@ const Patients = () => {
   const dataToShow = patientQuery.length > 1 ? patientResults : patients;
 
   return (
-    <div className='p-4'>
+    <div className='p-0' >
       <div className='sticky top-[0px] md:top-[0px] z-20 bg-[#f8f9fa] dark:bg-[#1a1b1e] border-b border-gray-200 dark:border-gray-700'>
         <div className='flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 px-4 pt-4 pb-3'>
           <h1 className='text-2xl font-bold dark:text-[#e5e7eb]'>Pacientes</h1>
@@ -106,26 +106,26 @@ const Patients = () => {
       {error && <p className='text-red-500'>Error: {error}</p>}
 
       {!loading && !error && patients.length > 0 && (
-        <div className="overflow-y-auto max-h-[79vh]">
-          <table className='hidden sm:table min-w-[700px] w-full bg-white dark:bg-[#2a2b2f] rounded-lg shadow-md text-sm'>
+        <div className="overflow-y-auto sm:max-h-[80vh] xl:max-h-[81vh] 2xl:max-h-[80vh] ">
+          <table className='hidden md:table min-w-[700px] w-full bg-white dark:bg-[#2a2b2f] rounded-lg shadow-md text-sm'>
             <thead className='sticky top-0 z-10 bg-[#e1e5e9] dark:bg-[#1f2023] text-[#1f2937] dark:text-white text-sm'>
               <tr>
-                <th className='px-4 py-3 text-left text-sm font-semibold'>
+                <th className='px-4 py-3 text-left text-sm font-semibold md:max-lg:px-2 md:max-lg:py-2 md:max-lg:text-xs'>
                   Nombre
                 </th>
-                <th className='px-4 py-3 text-left text-sm font-semibold'>
+                <th className='px-4 py-3 text-left text-sm font-semibold md:max-lg:px-2 md:max-lg:py-2 md:max-lg:text-xs'>
                   Cédula
                 </th>
-                <th className='px-4 py-3 text-left text-sm font-semibold'>
+                <th className='px-4 py-3 text-left text-sm font-semibold md:max-lg:px-2 md:max-lg:py-2 md:max-lg:text-xs'>
                   Sexo
                 </th>
-                <th className='px-4 py-3 text-left text-sm font-semibold'>
+                <th className='px-4 py-3 text-left text-sm font-semibold md:max-lg:px-2 md:max-lg:py-2 md:max-lg:text-xs'>
                   Edad
                 </th>
-                <th className='px-4 py-3 text-left text-sm font-semibold'>
+                <th className='px-4 py-3 text-left text-sm font-semibold md:max-lg:px-2 md:max-lg:py-2 md:max-lg:text-xs'>
                   Fecha de Nacimiento
                 </th>
-                <th className='px-4 py-3'></th>
+                <th className='px-4 py-3 text-left text-sm font-semibold md:max-lg:px-2 md:max-lg:py-2 md:max-lg:text-xs'></th>
               </tr>
             </thead>
             <tbody>
@@ -135,13 +135,17 @@ const Patients = () => {
                   className='cursor-pointer border-b border-gray-100 dark:border-gray-700 hover:bg-[#f3f4f6] dark:hover:bg-[#1f2023] transition'
                   onClick={() => openPatientModal(patient)}
                 >
-                  <td className='px-4 py-3 flex items-center whitespace-nowrap'>
-                    <div className='h-10 w-10 flex items-center justify-center rounded-full mr-3 bg-[#a78bfa] dark:bg-[#4f46e5]'>
-                      <div className='text-white font-medium'>
-                        {getInitials(patient.nombre)}
+                  <td className="px-4 py-3 whitespace-nowrap">
+                    <div className="flex items-center gap-2 md:max-lg:gap-1 md:max-lg:flex-nowrap">
+                      <div className="h-10 w-10 flex items-center justify-center rounded-full bg-[#a78bfa] dark:bg-[#4f46e5] md:max-lg:h-8 md:max-lg:w-8">
+                        <div className="text-white font-medium text-sm md:max-lg:text-xs">
+                          {getInitials(patient.nombre)}
+                        </div>
                       </div>
+                      <span className="font-medium md:max-lg:text-xs">
+                        {patient.nombre}
+                      </span>
                     </div>
-                    <span className=' font-medium'>{patient.nombre}</span>
                   </td>
                   <td className='px-4 py-3 whitespace-nowrap'>
                     {patient.cedula}
@@ -153,7 +157,7 @@ const Patients = () => {
                   </td>
                   <td className='px-4 py-3 whitespace-nowrap'>
                     <Button
-                      className='w-2/3'
+                      className='w-2/3md:max-lg:w-full md:max-lg:text-xs md:max-lg:px-2 md:max-lg:py-1'
                       onClick={(e) => {
                         e.stopPropagation();
                         handleHistoryClick(patient);
@@ -174,7 +178,7 @@ const Patients = () => {
         </div>
       )}
       {/* Cards para móviles */}
-      <div className='grid grid-cols-1 gap-4 sm:hidden'>
+      <div className='grid grid-cols-1 gap-4 md:hidden'>
         {dataToShow.map((patient) => (
           <div
             key={patient.id}

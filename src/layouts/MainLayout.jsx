@@ -18,14 +18,14 @@ export default function MainLayout() {
   const navigate = useNavigate();
 
   const [setSearch] = useState("");
-  
+
   const {
     patientQuery,
     setQuery,
     searchPatients,
     clearPatientSearch,
     clearSelectedPatient,
-    patientResults,    
+    patientResults,
     selectedPatient,
     setSelectedPatient,
   } = useSearchStore();
@@ -69,13 +69,14 @@ export default function MainLayout() {
 
       <aside
         className={`fixed top-0 left-0 z-40 w-[250px] h-full bg-[#f8f9fa] dark:bg-[#2a2b2f] border-r border-gray-200 dark:border-gray-700 transform transition-transform duration-300 ease-in-out
-        ${
-          sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } md:translate-x-0 md:static md:flex md:flex-col justify-end`}
+        ${sidebarOpen ? "translate-x-0" : "-translate-x-full"
+          } md:translate-x-0 md:static md:flex md:flex-col justify-end`}
       >
-        <div className='flex items-center gap-4 h-[72px] md:h-[80px] p-4 text-xl font-bold bg-[#a78bfa] dark:bg-[#4f46e5] text-white md:w-[100%] md:gap-0'>
-          <img src={logoImg} alt='Logo DermaVault' className='w-12 h-12' />
-          DermaVault
+        <div className='flex items-center h-[72px] md:h-[80px] px-3 text-xl md:text-lg font-bold bg-[#a78bfa] dark:bg-[#4f46e5] text-white w-full'>
+          <img src={logoImg} alt='Logo DermaVault' className='w-10 h-10 mr-2 shrink-0' />
+          <span className='text-ellipsis whitespace-nowrap overflow-hidden max-w-[160px] md:max-w-[180px] lg:max-w-none'>
+            DermaVault
+          </span>
         </div>
         <Sidebar closeSidebar={() => setSidebarOpen(false)} />
       </aside>
@@ -147,7 +148,7 @@ export default function MainLayout() {
         </header>
 
         {/* === ÁREA DE CONTENIDO === */}
-        <main className='flex-1 overflow-y-auto pt-0 px-4 md:px-[0px] max-w-screen-xl mx-auto min-h-[calc(100vh-80px)]'>
+        <main className='flex-1 overflow-y-auto pt-0 px-4 md:px-[0px] w-full sm:max-w-screen-xl mx-auto min-h-[calc(100vh-80px)] md:w-3/3 2xl:w-screen'>
           <Outlet />
         </main>
       </div>
