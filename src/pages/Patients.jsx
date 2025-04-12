@@ -106,8 +106,8 @@ const Patients = () => {
       {error && <p className='text-red-500'>Error: {error}</p>}
 
       {!loading && !error && patients.length > 0 && (
-        <div className="overflow-y-auto sm:max-h-[80vh] xl:max-h-[81vh] 2xl:max-h-[80vh] ">
-          <table className='hidden md:table min-w-[700px] w-full bg-white dark:bg-[#2a2b2f] rounded-lg shadow-md text-sm'>
+        <div className="lg: overflow-y-auto max-h-[calc(100vh-160px)] pr-6 pl-6 pt-0 sm:max-h-[80vh] xl:max-h-[81vh] 2xl:max-h-[80vh] ">
+          <table className='hidden md:table min-w-[700px] w-full bg-white dark:bg-[#2a2b2f] rounded-lg shadow-md text-sm '>
             <thead className='sticky top-0 z-10 bg-[#e1e5e9] dark:bg-[#1f2023] text-[#1f2937] dark:text-white text-sm'>
               <tr>
                 <th className='px-4 py-3 text-left text-sm font-semibold md:max-lg:px-2 md:max-lg:py-2 md:max-lg:text-xs'>
@@ -157,7 +157,7 @@ const Patients = () => {
                   </td>
                   <td className='px-4 py-3 whitespace-nowrap'>
                     <Button
-                      className='w-2/3md:max-lg:w-full md:max-lg:text-xs md:max-lg:px-2 md:max-lg:py-1'
+                      className='md:max-lg:w-full md:max-lg:text-xs md:max-lg:px-2 md:max-lg:py-1 h-10'
                       onClick={(e) => {
                         e.stopPropagation();
                         handleHistoryClick(patient);
@@ -178,7 +178,7 @@ const Patients = () => {
         </div>
       )}
       {/* Cards para móviles */}
-      <div className='grid grid-cols-1 gap-4 md:hidden'>
+      <div className='grid grid-cols-1 gap-4 sm:hidden overflow-y-auto h-[calc(100dvh-180px)] px-2 pb-4'>
         {dataToShow.map((patient) => (
           <div
             key={patient.id}

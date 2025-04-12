@@ -73,11 +73,18 @@ export default function MainLayout() {
           } md:translate-x-0 md:static md:flex md:flex-col justify-end`}
       >
         <div className='flex items-center h-[72px] md:h-[80px] px-3 text-xl md:text-lg font-bold bg-[#a78bfa] dark:bg-[#4f46e5] text-white w-full'>
-          <img src={logoImg} alt='Logo DermaVault' className='w-10 h-10 mr-2 shrink-0' />
-          <span className='text-ellipsis whitespace-nowrap overflow-hidden max-w-[160px] md:max-w-[180px] lg:max-w-none'>
-            DermaVault
-          </span>
+          <div className='w-16 h-[37px] scale-150 overflow-hidden mr-2'>
+            <img
+              src={logoImg}
+              alt='Logo MedBox'
+              className='object-contain -translate-y-1'
+            />
+          </div>
+            <span className='text-ellipsis whitespace-nowrap overflow-hidden max-w-[160px] md:max-w-[180px] lg:max-w-none'>
+              MedBox 2025
+            </span>
         </div>
+
         <Sidebar closeSidebar={() => setSidebarOpen(false)} />
       </aside>
 
@@ -148,7 +155,7 @@ export default function MainLayout() {
         </header>
 
         {/* === ÁREA DE CONTENIDO === */}
-        <main className='flex-1 overflow-y-auto pt-0 px-4 md:px-[0px] w-full sm:max-w-screen-xl mx-auto min-h-[calc(100vh-80px)] md:w-3/3 2xl:w-screen'>
+        <main className='flex-1 pt-0 px-4 md:px-[0px] w-full sm:max-w-screen-xl mx-auto min-h-[calc(100vh-80px)] md:w-3/3 2xl:w-screen'>
           <Outlet />
         </main>
       </div>

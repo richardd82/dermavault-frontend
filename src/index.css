@@ -20,6 +20,13 @@
   --color-accent: #292a2d;
 }
 
+/* Oculta la scrollbar en todo el navegador */
+
+html, body {
+  overflow: hidden;
+  height: 100%;
+}
+
 /* Aplicamos los colores a la app */
 body {
   background-color: var(--color-bg);

@@ -62,7 +62,7 @@ const MedicalHistories = () => {
 
   return (
     <div className='p-4'>
-      <div className="sticky top-0 z-20 bg-[#f8f9fa] dark:bg-[#1a1b1e] border-b border-gray-200 dark:border-gray-700 pb-2 mb-6">
+      <div className="sticky top-0 md:top-[0px] z-20 bg-[#f8f9fa] dark:bg-[#1a1b1e] border-b border-gray-200 dark:border-gray-700 pb-2 mb-6">
         <div className="flex flex-col min-[1144px]:flex-row min-[1144px]:justify-between min-[1144px]:items-center gap-4 px-4">
 
           {/* Título */}
@@ -105,7 +105,7 @@ const MedicalHistories = () => {
         <p className='text-gray-500 dark:text-gray-400'>Cargando...</p>
       )}
 
-      <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-4'>
+      <div className='overflow-y-auto max-h-[calc(100vh-180px)] pr-6 pl-7 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-4 gap-4 mt-4'>
         {filteredHistories.map((history) => (
           <div
             key={history.id}
@@ -141,7 +141,7 @@ const MedicalHistories = () => {
           </div>
         ))}
       </div>
-
+        
       {!loading && filteredHistories.length === 0 && (
         <p className='text-gray-500 dark:text-gray-400 mt-4'>
           No hay historias registradas.

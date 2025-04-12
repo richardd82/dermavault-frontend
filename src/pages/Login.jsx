@@ -46,13 +46,14 @@ console.log(theme, "EL THEME")
       <div className="w-screen h-screen flex flex-col md:flex-row">
         {/* Branding - Top on mobile / Left on desktop */}
         <div className="w-full md:w-1/2 h-1/2 md:h-full flex flex-col items-center justify-center px-10 bg-[#a78bfa] dark:bg-[#4f46e5] text-white dark:text-[#f8f9fa]">
-          <div className="w-[284px] h-[284px] flex items-center justify-center">            
+          <div className="w-[400px] h-[400px] flex items-center justify-center">            
             <img src={logoImg} alt="Logo" />
           </div>
-          <h1 className="text-4xl font-light mb-4">DermaVault</h1>
-          <p className="text-lg text-center max-w-sm">
-            Cuidamos tu piel, registramos tu historia.
+          <h1 className="text-4xl font-light mb-4">Dr. Charles Meurehg Haik</h1>
+          <p className="text-xl text-center max-w-sm">
+          Dermatólogo
           </p>
+          
         </div>
 
         {/* Formulario - Bottom on mobile / Right on desktop */}
