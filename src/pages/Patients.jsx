@@ -42,30 +42,30 @@ const Patients = () => {
   const observer = useRef();
 
 
-const lastElementRef = useCallback(
-  (node) => {
-    if (loading || !hasMore) return;
-
-    if (observer.current) observer.current.disconnect();
-
-    observer.current = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
-          console.log("Intersectó con el último paciente");
-          fetchMorePatients();
+  const lastElementRef = useCallback(
+    (node) => {
+      if (loading || !hasMore || patientQuery.trim().length > 0) return;
+  
+      if (observer.current) observer.current.disconnect();
+  
+      observer.current = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting) {
+            console.log("Intersectó con el último paciente");
+            fetchMorePatients();
+          }
+        },
+        {
+          root: scrollContainerRef.current,
+          rootMargin: "0px",
+          threshold: 1.0,
         }
-      },
-      {
-        root: scrollContainerRef.current,
-        rootMargin: "0px",
-        threshold: 1.0,
-      }
-    );
-
-    if (node) observer.current.observe(node);
-  },
-  [loading, hasMore, fetchMorePatients]
-);
+      );
+  
+      if (node) observer.current.observe(node);
+    },
+    [loading, hasMore, fetchMorePatients, patientQuery]
+  );
 
 
   useEffect(() => {
@@ -91,6 +91,8 @@ const lastElementRef = useCallback(
       setCreatingHistoryFor(patient);
     }
   };
+  const truncate = (text, maxLength = 20) =>
+    text.length > maxLength ? text.slice(0, maxLength) + "…" : text;
 
   const dataToShow = patientQuery.length > 1 ? patientResults : patients;
   const total = dataToShow.length;
@@ -117,11 +119,11 @@ const lastElementRef = useCallback(
 
       {/* Contenedor con scroll que aplica tanto a tabla como cards */}
       <div
-        className="overflow-y-auto max-h-[calc(100vh-160px)] pr-6 px-6 pt-0"
+        className="overflow-x-auto max-h-[calc(100vh-160px)] px-4"
         ref={scrollContainerRef}
       >
         {/* Tabla escritorio */}
-        <table className='hidden md:table w-full table-fixed bg-white dark:bg-[#2a2b2f] rounded-lg shadow-md text-sm'>
+        <table className='hidden lg:table w-full table-fixed bg-white dark:bg-[#2a2b2f] rounded-lg shadow-md text-sm'>
           <thead className='sticky top-0 z-10 bg-[#e1e5e9] dark:bg-[#1f2023] text-[#1f2937] dark:text-white'>
             <tr>
               <th className='w-[25%] px-4 py-3 text-left font-semibold'>Nombre</th>
@@ -147,20 +149,20 @@ const lastElementRef = useCallback(
                       <div className="h-10 w-10 flex items-center justify-center rounded-full bg-[#a78bfa] dark:bg-[#4f46e5]">
                         <div className="text-white font-medium text-sm">{getInitials(patient.nombre)}</div>
                       </div>
-                      <span className="font-medium">{patient.nombre}</span>
+                      <span className="font-medium">{truncate(patient.nombre)}</span>
                     </div>
                   </td>
                   <td className='px-4 py-3'>{patient.cedula}</td>
                   <td className='px-4 py-3'>{patient.sexo}</td>
                   <td className='px-4 py-3'>{patient.edad}</td>
-                  <td className='px-4 py-3'>{formatDate(patient.fecha_nacimiento)}</td>
+                  <td className='px-4 py-3 md:text-xs lg:text-sm'>{formatDate(patient.fecha_nacimiento)}</td>
                   <td className='px-4 py-3'>
                     <Button
-                      className='w-[250px] text-sm'
+                      className='w-[250px] text-sm md:h-12'
                       onClick={(e) => {
                         e.stopPropagation();
                         handleHistoryClick(patient);
-                        window.history.pushState({}, "", "/medicalhistories");
+                        window.history.replaceState(null, "", "/patients");
                       }}
                     >
                       {histories.find(h => h.patient_id === patient.id)
@@ -175,7 +177,7 @@ const lastElementRef = useCallback(
         </table>
 
         {/* Cards mobile */}
-        <div className='grid grid-cols-1 mt-2 gap-4 md:hidden'>
+        <div className='grid grid-cols-1 mt-2 gap-4 lg:hidden'>
           {dataToShow.map((patient, index) => {
             const isLast = index === dataToShow.length - 1;
             return (
@@ -191,7 +193,7 @@ const lastElementRef = useCallback(
                   </div>
                   <div>
                     <p className='font-semibold text-gray-800 dark:text-white'>
-                      {patient.nombre} {patient.apellido}
+                      {truncate(patient.nombre)} {patient.apellido}
                     </p>
                     <p className='text-xs text-gray-500 dark:text-gray-400'>Cédula: {patient.cedula}</p>
                   </div>
