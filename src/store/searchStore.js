@@ -48,6 +48,17 @@ const useSearchStore = create((set) => ({
     }
   },
 
+  searchHistoriesInDB: async (query) => {
+    try {
+      const res = await api.get(`${API_URL}/histories/search?q=${query}`);
+      return res.data.data || [];
+    } catch (error) {
+      console.error("Error buscando en la base de datos:", error);
+      return [];
+    }
+  },
+  
+
   setHistoryQuery: (query) => set({ historyQuery: query }),
 
   // ======== Limpiar búsqueda ========
