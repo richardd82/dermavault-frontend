@@ -24,19 +24,44 @@ const useSearchStore = create((set, get) => ({
   // ✅ Solo actualiza la query (texto que se escribe)
   setQuery: (patientQuery) => set({ patientQuery }),
   
-  searchPatients: async (query) => {
-    set({ patientQuery: query, loadingPatients: true, errorPatients: null });
-    if (!query || query.length < 2) return set({ patientResults: [], loadingPatients: false });
+  // searchPatients: async (query) => {
+  //   set({ patientQuery: query, loadingPatients: true, errorPatients: null });
+  //   if (!query || query.length < 1) return set({ patientResults: [], loadingPatients: false });
 
+  //   try {
+  //     const res = await api.get(`${API_URL}/patients/search`, { params: { q: query } });
+  //     console.log(res.data, 'res patients');
+  //     set({ patientResults: res.data, loadingPatients: false });
+  //   } catch (err) {
+  //     set({ errorPatients: err.message, loadingPatients: false });
+  //   }
+  // },
+  searchPatients: async (query) => {
+    set({ patientQuery: query, loadingPatients: true, errorPatients: null, patientResults: [] });
+    console.log(get().patientResults, 'patientResults');
+    const clean = query?.trim() || "";
+    const isNumeric = /^\d+$/.test(clean);
+  
+    // Condiciones mínimas para lanzar búsqueda
+    if ((isNumeric && clean.length < 1) || (!isNumeric && clean.length < 3)) {
+      return set({ patientResults: [], loadingPatients: false });
+    }
+  
+    // Inicia búsqueda
+  
     try {
-      const res = await api.get(`${API_URL}/patients/search`, { params: { q: query } });
-      // console.log(res.data, 'res patients');
+      const res = await api.get(`${API_URL}/patients/search`, {
+        params: { q: clean }
+      });
+  
+      console.log(res.data, "✅ Resultados de pacientes");
       set({ patientResults: res.data, loadingPatients: false });
     } catch (err) {
-      set({ errorPatients: err.message, loadingPatients: false });
+      console.error("❌ Error buscando pacientes:", err);
+      set({ errorPatients: err.message, loadingPatients: false, patientResults: [] });
     }
   },
-
+  
   searchHistories: async (query) => {
     set({ historyQuery: query, loadingHistories: true, errorHistories: null });
     if (!query || query.length < 2) return set({ historyResults: [], loadingHistories: false });

@@ -31,6 +31,7 @@ export default function MainLayout() {
     setSelectedPatient,
   } = useSearchStore();
   const [showResults, setShowResults] = useState(false);
+  const [searching, setSearching] = useState(false);
   const dropdownRef = useRef(null);
   const debouncedQuery = useDebounce(patientQuery, 300); // 300ms de espera
 
@@ -46,18 +47,39 @@ export default function MainLayout() {
   }, [showResults]);
 
   useEffect(() => {
-    const clean = debouncedQuery.trim();
+    const clean = debouncedQuery; // sin trim
+    const isNumeric = /^\d+$/.test(clean);
   
-    // 🔒 Mínimo 2 letras limpias
-    if (clean.length < 3) return;
+    if (isNumeric) {
+      if (clean.length < 1) {
+        setShowResults(false);
+        return;
+      }
+    } else {
+      if (clean.length < 3) {
+        setShowResults(false);
+        return;
+      }
+    }
   
-    // 🛑 Si empieza con M- o m- pero no tiene al menos 3 dígitos después, no busques
-    if (/^m-\d{0,2}$/i.test(clean)) return;
-  
-    // ✅ Si pasa, busca normal
     searchPatients(clean);
     setShowResults(true);
   }, [debouncedQuery]);
+  
+  // useEffect(() => {
+  //   const clean = debouncedQuery;
+  
+  //   const isCedula = /^m-\d+$/i.test(clean) || /^\d+$/.test(clean);
+  
+  //   // ✅ Permitimos solo 2 caracteres si es cédula
+  //   if (isCedula && clean.replace(/\D/g, "").length < 1) return;
+  
+  //   // 🔒 Para lo demás, mínimo 3 caracteres
+  //   if (!isCedula && clean.length < 3) return;
+  
+  //   searchPatients(clean);
+  //   setShowResults(true);
+  // }, [debouncedQuery]);  
   
   const handleKeyDown = (e) => {
     if (e.key === "-" || e.code === "Minus") {
@@ -73,15 +95,16 @@ export default function MainLayout() {
 
   const handleSearchChange = (e) => {
     const value = e.target.value;
-    setQuery(value); // no hay validaciones aquí
-    setShowResults(value.trim().length >= 2);
-  };
-  
-  useEffect(() => {
-    if (debouncedQuery.length >= 2) {
-      searchPatients(debouncedQuery);
+    
+    setQuery(value); // ✅ actualiza estado del query
+    if (value === "") {
+      clearPatientSearch(); // 🔥 Limpiar resultados y resetear estado
+      setShowResults(false);
+      return;
     }
-  }, [debouncedQuery]);
+      
+    setShowResults(value.length >= 1);
+  };
   
   if (!user) return null;
   return (
