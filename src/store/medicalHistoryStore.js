@@ -12,9 +12,9 @@ const useMedicalHistoryStore = create((set, get) => ({
   getHistories: async () => {
     try {
       set({ loading: true });
-      const res = await api.get(`${API_URL}/histories`);
-      // console.log("Historias recibidas:", res.data.data);
-      set({ histories: res.data.data, loading: false });
+      const res = await api.get(`${API_URL}/histories?limit=1000&offset=0`);
+      console.log("Historias recibidas:", res.data.data);
+      set({ histories: res.data?.data, loading: false });
     } catch (error) {
       set({ error: error.message, loading: false });
     }

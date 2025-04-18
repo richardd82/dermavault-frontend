@@ -3,7 +3,7 @@ import api from '../hooks/axiosConfig';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
-const useSearchStore = create((set) => ({
+const useSearchStore = create((set, get) => ({
   // Pacientes
   patientQuery: '',
   patientResults: [],
@@ -15,6 +15,7 @@ const useSearchStore = create((set) => ({
   historyResults: [],
   loadingHistories: false,
   errorHistories: null,
+  historyCedulas: [],
 
   // Paciente seleccionado (para modal, por ejemplo)
   selectedPatient: null,
@@ -58,6 +59,21 @@ const useSearchStore = create((set) => ({
     }
   },
   
+  getAllHistoryCedulas: async () => {
+    const { historyCedulas } = get(); // Obtener el estado actual de historyCedulas
+    if (historyCedulas?.length > 0) return historyCedulas;
+  
+    try {
+      const res = await api.get(`${API_URL}/histories/cedulas`);
+      const data = res.data?.data || [];
+  
+      set({ historyCedulas: data });
+      return data;
+    } catch (err) {
+      console.error("Error al obtener cédulas de historias clínicas:", err);
+      return [];
+    }
+  },
 
   setHistoryQuery: (query) => set({ historyQuery: query }),
 
@@ -68,6 +84,8 @@ const useSearchStore = create((set) => ({
 
   clearHistorySearch: () =>
     set({ historyQuery: '', historyResults: [], loadingHistories: false, errorHistories: null }),
+
+  clearHistoryCedulas: () => set({ historyCedulas: [] }),
 
   // ======== Paciente seleccionado (por buscador global) ========
 

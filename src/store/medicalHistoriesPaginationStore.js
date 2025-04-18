@@ -10,6 +10,7 @@ const useMedicalHistoryPaginationStore = create((set, get) => ({
   limit: 100,
   hasMore: true,
   loading: false,
+  total: 0,
 
   fetchMoreHistories: async () => {
     const { offset, limit, hasMore, loading, histories } = get();
@@ -19,16 +20,17 @@ const useMedicalHistoryPaginationStore = create((set, get) => ({
 
     try {
       const response = await api.get(`${API_URL}/histories?limit=${limit}&offset=${offset}`);
-      console.log(response.data);
+      // console.log(response.data);
       const newHistories = response.data.data || [];
 
-      set({
+      set({        
         histories: [
           ...histories,
           ...newHistories.filter(h => !histories.some(e => e.id === h.id))
         ],
         offset: offset + limit,
         hasMore: response.data.hasMore ?? newHistories.length === limit,
+        total: response.data.total ?? get().total,
         loading: false,
       });
     } catch (error) {
@@ -42,6 +44,7 @@ const useMedicalHistoryPaginationStore = create((set, get) => ({
       histories: [],
       offset: 0,
       hasMore: true,
+      total: 0,
     });
   },
 }));

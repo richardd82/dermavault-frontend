@@ -9,6 +9,7 @@ import ThemeToggle from "../components/ThemeToggle";
 import PatientModal from "../components/PatientModal";
 import { FaSearch, FaBars } from "react-icons/fa";
 import logoImg from "../assets/derma-logo.png";
+import useDebounce from "../hooks/useDebounce";
 
 export default function MainLayout() {
   const { user } = useAuthStore();
@@ -31,6 +32,7 @@ export default function MainLayout() {
   } = useSearchStore();
   const [showResults, setShowResults] = useState(false);
   const dropdownRef = useRef(null);
+  const debouncedQuery = useDebounce(patientQuery, 300); // 300ms de espera
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -44,6 +46,26 @@ export default function MainLayout() {
   }, [showResults]);
 
   useEffect(() => {
+    const clean = debouncedQuery.trim();
+  
+    // 🔒 Mínimo 2 letras limpias
+    if (clean.length < 2) return;
+  
+    // 🛑 Si empieza con M- o m- pero no tiene al menos 3 dígitos después, no busques
+    if (/^m-\d{0,2}$/i.test(clean)) return;
+  
+    // ✅ Si pasa, busca normal
+    searchPatients(clean);
+    setShowResults(true);
+  }, [debouncedQuery]);
+  
+  const handleKeyDown = (e) => {
+    if (e.key === "-" || e.code === "Minus") {
+      e.preventDefault(); // Evita que se escriba
+    }
+  };
+
+  useEffect(() => {
     if (!user) {
       navigate("/");
     }
@@ -51,10 +73,16 @@ export default function MainLayout() {
 
   const handleSearchChange = (e) => {
     const value = e.target.value;
-    setQuery(value);
-    setShowResults(value.length >= 2); // Mostrar solo si hay al menos 2 caracteres
-    searchPatients(value);
+    setQuery(value); // no hay validaciones aquí
+    setShowResults(value.trim().length >= 2);
   };
+  
+  useEffect(() => {
+    if (debouncedQuery.length >= 2) {
+      searchPatients(debouncedQuery);
+    }
+  }, [debouncedQuery]);
+  
   if (!user) return null;
   return (
     <div
@@ -108,6 +136,7 @@ export default function MainLayout() {
                 type='text'
                 value={patientQuery}
                 onChange={handleSearchChange}
+                onKeyDown={handleKeyDown}
                 placeholder='Buscar paciente...'
                 className='pl-10 pr-4 py-2 w-full rounded-md bg-[#f8f9fa] dark:bg-[#1f2023] border border-gray-300 dark:border-gray-600 text-sm focus:outline-none focus:ring-2 focus:ring-[#4f46e5]'
               />

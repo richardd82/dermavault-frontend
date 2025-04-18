@@ -8,6 +8,7 @@ import useMedicalHistoryStore from "../store/medicalHistoryStore";
 import HistoryDetailModal from "../components/HistoryDetailModal";
 import NewHistoryModal from "../components/NewHistoryModal";
 import useSearchStore from "../store/searchStore";
+import useDebounce from "../hooks/useDebounce.js";
 
 const formatDate = (dateString) => {
   if (!dateString) return "";
@@ -24,7 +25,7 @@ const Patients = () => {
     fetchMorePatients,
     hasMore,
   } = usePatientPaginationStore();
-
+  console.log("Pacientes:", patients);
   const {
     openPatientModal,
     showModal,
@@ -32,15 +33,36 @@ const Patients = () => {
     closePatientModal,
   } = usePatientStore();
 
-  const { patientQuery, patientResults, clearPatientSearch } = useSearchStore();
+  const { patientQuery, patientResults, clearPatientSearch, searchPatients } = useSearchStore();
   const [showNewModal, setShowNewModal] = useState(false);
   const [selectedHistory, setSelectedHistory] = useState(null);
   const [creatingHistoryFor, setCreatingHistoryFor] = useState(null);
-  const { getHistoryByCedula, histories, getHistories } = useMedicalHistoryStore();
-
+  const { getHistoryByCedula,} = useMedicalHistoryStore();
+  // console.log(histories, 'historias desde patients');
+  const { getAllHistoryCedulas } = useSearchStore();
+  const [hasHistoryMap, setHistoryMap] = useState(new Map());
+  const debouncedQuery = useDebounce(patientQuery, 300);
   const scrollContainerRef = useRef(null);
   const observer = useRef();
 
+  useEffect(() => {
+    getAllHistoryCedulas().then((hc) => {
+      const map = new Map(hc.map(h => [h.patient_id, h.cedula]));
+    setHistoryMap(map);
+    });
+  }, []);
+  useEffect(() => {
+    if (debouncedQuery.trim().length >= 2) {
+      searchPatients(debouncedQuery);
+    }
+  }, [debouncedQuery]);
+  useEffect(() => {
+    if (patients.length === 0) {
+      fetchMorePatients(); // ✅ solo carga inicial o scroll
+    }
+    getAllHistoryCedulas(); // ✅ para map de historias
+    return () => clearPatientSearch();
+  }, []);
 
   const lastElementRef = useCallback(
     (node) => {
@@ -51,7 +73,7 @@ const Patients = () => {
       observer.current = new IntersectionObserver(
         (entries) => {
           if (entries[0].isIntersecting) {
-            console.log("Intersectó con el último paciente");
+            // console.log("Intersectó con el último paciente");
             fetchMorePatients();
           }
         },
@@ -67,17 +89,7 @@ const Patients = () => {
     [loading, hasMore, fetchMorePatients, patientQuery]
   );
 
-
-  useEffect(() => {
-    if (patients.length === 0) {
-      fetchMorePatients();
-    }
-    getHistories();
-    return () => {
-      clearPatientSearch();
-    };
-  }, []);
-
+ 
   const getInitials = (fullName) => fullName
     ? fullName.split(" ").map(p => p[0]?.toUpperCase()).slice(0, 2).join("")
     : "";
@@ -165,7 +177,7 @@ const Patients = () => {
                         window.history.replaceState(null, "", "/patients");
                       }}
                     >
-                      {histories.find(h => h.patient_id === patient.id)
+                      {hasHistoryMap.has(patient.id)
                         ? "Ver Historia Clínica"
                         : "Crear Historia Clínica"}
                     </Button>
@@ -212,7 +224,7 @@ const Patients = () => {
                       window.history.pushState({}, "", "/medicalhistories");
                     }}
                   >
-                    {histories.find(h => h.patient_id === patient.id)
+                    {hasHistoryMap.has(patient.id)
                       ? "Ver Historia Clínica"
                       : "Crear Historia Clínica"}
                   </Button>
