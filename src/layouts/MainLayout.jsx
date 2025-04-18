@@ -49,7 +49,7 @@ export default function MainLayout() {
     const clean = debouncedQuery.trim();
   
     // 🔒 Mínimo 2 letras limpias
-    if (clean.length < 2) return;
+    if (clean.length < 3) return;
   
     // 🛑 Si empieza con M- o m- pero no tiene al menos 3 dígitos después, no busques
     if (/^m-\d{0,2}$/i.test(clean)) return;
