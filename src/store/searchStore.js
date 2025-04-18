@@ -16,6 +16,8 @@ const useSearchStore = create((set, get) => ({
   loadingHistories: false,
   errorHistories: null,
   historyCedulas: [],
+  loadingHistoriesSearch: false,
+
 
   // Paciente seleccionado (para modal, por ejemplo)
   selectedPatient: null,
@@ -24,21 +26,9 @@ const useSearchStore = create((set, get) => ({
   // ✅ Solo actualiza la query (texto que se escribe)
   setQuery: (patientQuery) => set({ patientQuery }),
   
-  // searchPatients: async (query) => {
-  //   set({ patientQuery: query, loadingPatients: true, errorPatients: null });
-  //   if (!query || query.length < 1) return set({ patientResults: [], loadingPatients: false });
-
-  //   try {
-  //     const res = await api.get(`${API_URL}/patients/search`, { params: { q: query } });
-  //     console.log(res.data, 'res patients');
-  //     set({ patientResults: res.data, loadingPatients: false });
-  //   } catch (err) {
-  //     set({ errorPatients: err.message, loadingPatients: false });
-  //   }
-  // },
   searchPatients: async (query) => {
     set({ patientQuery: query, loadingPatients: true, errorPatients: null, patientResults: [] });
-    console.log(get().patientResults, 'patientResults');
+    // console.log(get().patientResults, 'patientResults');
     const clean = query?.trim() || "";
     const isNumeric = /^\d+$/.test(clean);
   
@@ -50,9 +40,7 @@ const useSearchStore = create((set, get) => ({
     // Inicia búsqueda
   
     try {
-      const res = await api.get(`${API_URL}/patients/search`, {
-        params: { q: clean }
-      });
+      const res = await api.get(`${API_URL}/patients/search`, { params: { q: clean } });
   
       console.log(res.data, "✅ Resultados de pacientes");
       set({ patientResults: res.data, loadingPatients: false });
@@ -75,14 +63,50 @@ const useSearchStore = create((set, get) => ({
   },
 
   searchHistoriesInDB: async (query) => {
+    set({ loadingHistoriesSearch: true });
+    const clean = query.trim();
+    const isNumeric = /^\d+$/.test(clean);
+
+    if ((isNumeric && clean.length < 1) || (!isNumeric && clean.length < 3)) {
+      set({ loadingHistoriesSearch: false });
+      return [];
+    }
+
+    
+
     try {
-      const res = await api.get(`${API_URL}/histories/search?q=${query}`);
+      const res = await api.get(`${API_URL}/histories/search-exact`, { params: { q: clean } });
       return res.data.data || [];
     } catch (error) {
       console.error("Error buscando en la base de datos:", error);
       return [];
+    } finally {
+      set({ loadingHistoriesSearch: false });
     }
   },
+
+  // searchHistoriesInDB: async (query) => {
+  //   set({ loadingHistoriesSearch: true });
+  //   const clean = query.trim();
+  //   const isNumeric = /^\d+$/.test(clean);
+  
+  //   if ((isNumeric && clean.length < 1) || (!isNumeric && clean.length < 3)) {
+  //     return set({ historyResults: [], loadingHistoriesSearch: false });
+  //   }
+  
+  //   try {
+  //     const res = await api.get(`${API_URL}/histories/search`, {
+  //       params: { q: clean }
+  //     });
+  //     set({ historyResults: res.data, loadingHistoriesSearch: false });
+
+  //   } catch (error) {
+  //     console.error("Error buscando en la base de datos:", error);
+  //     return [];
+  //   } finally {
+  //     set({ loadingHistoriesSearch: false });
+  //   }
+  // },
   
   getAllHistoryCedulas: async () => {
     const { historyCedulas } = get(); // Obtener el estado actual de historyCedulas
@@ -92,16 +116,17 @@ const useSearchStore = create((set, get) => ({
       const res = await api.get(`${API_URL}/histories/cedulas`);
       const data = res.data?.data || [];
   
-      set({ historyCedulas: data });
+      set({ historyResults: res.data, loadingHistoriesSearch: false });
       return data;
     } catch (err) {
       console.error("Error al obtener cédulas de historias clínicas:", err);
+      set({ loadingHistoriesSearch: false });
       return [];
     }
   },
 
   setHistoryQuery: (query) => set({ historyQuery: query }),
-
+  setHistoriesInDB: (query) => set({ historyResults: query }),
   // ======== Limpiar búsqueda ========
 
   clearPatientSearch: () =>
@@ -116,6 +141,7 @@ const useSearchStore = create((set, get) => ({
 
   setSelectedPatient: (patient) => set({ selectedPatient: patient }),
   clearSelectedPatient: () => set({ selectedPatient: null }),
+  setLoadingHistoriesSearch: (loading) => set({ loadingHistoriesSearch: loading }),
 }));
 
 export default useSearchStore;

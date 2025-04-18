@@ -45,18 +45,13 @@ const Patients = () => {
   const scrollContainerRef = useRef(null);
   const observer = useRef();
   const navigate = useNavigate();
+  
   useEffect(() => {
     getAllHistoryCedulas().then((hc) => {
       const map = new Map(hc.map((h) => [h.patient_id, h.cedula]));
       setHistoryMap(map);
     });
   }, []);
-
-  // useEffect(() => {
-  //   if (debouncedQuery.trim().length >= 2) {
-  //     searchPatients(debouncedQuery);
-  //   }
-  // }, [debouncedQuery]);
 
   useEffect(() => {
     if (patients.length === 0) {

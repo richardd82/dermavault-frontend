@@ -66,21 +66,6 @@ export default function MainLayout() {
     setShowResults(true);
   }, [debouncedQuery]);
   
-  // useEffect(() => {
-  //   const clean = debouncedQuery;
-  
-  //   const isCedula = /^m-\d+$/i.test(clean) || /^\d+$/.test(clean);
-  
-  //   // ✅ Permitimos solo 2 caracteres si es cédula
-  //   if (isCedula && clean.replace(/\D/g, "").length < 1) return;
-  
-  //   // 🔒 Para lo demás, mínimo 3 caracteres
-  //   if (!isCedula && clean.length < 3) return;
-  
-  //   searchPatients(clean);
-  //   setShowResults(true);
-  // }, [debouncedQuery]);  
-  
   const handleKeyDown = (e) => {
     if (e.key === "-" || e.code === "Minus") {
       e.preventDefault(); // Evita que se escriba
