@@ -127,7 +127,7 @@ const HistoryDetailModal = ({ history, onClose }) => {
             <h2 className='text-xl font-bold text-gray-900 dark:text-white'>
               Detalles de la Historia Clínica
             </h2>
-            <div className='space-x-2'>
+            <div className='space-x-2 z-0'>
               <button
                 onClick={editMode ? handleSave : () => setEditMode(true)}
                 className={clsx(
