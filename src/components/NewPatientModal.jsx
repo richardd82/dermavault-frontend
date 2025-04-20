@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import usePatientStore from "../store/patientStore";
 import clsx from "clsx";
 import toast from "react-hot-toast";
+import CloseModalButton from "./CloseModalButton";
 
 
 const requiredFields = [
@@ -160,21 +161,22 @@ const NewPatientModal = ({ onClose }) => {
   );
 
   return (
-    <div className='fixed inset-0 bg-black/40 z-50 flex items-center justify-center px-4'>
-      <div className='bg-white dark:bg-[#1a1b1e] rounded-xl shadow-xl max-w-3xl w-full p-6 space-y-6 overflow-y-auto max-h-[90vh]'>
+    <div className='fixed inset-0 bg-black/40 z-50 flex items-center justify-center px-4 backdrop-blur-sm'>
+      <div className='bg-white dark:bg-[#1a1b1e] rounded-xl shadow-xl max-w-3xl w-full p-6 space-y-6 flex flex-col overflow-y-hidden max-h-[95vh]'>
         <div className='flex justify-between items-center'>
+        <CloseModalButton onClick={onClose} className="fixed top-4 right-4"/>      
           <h2 className='text-xl font-bold text-gray-900 dark:text-gray-100'>
             Registrar Paciente
           </h2>
           <button
             onClick={handleSubmit}
-            className='text-white px-4 py-2 rounded-md transition-colors bg-[#a78bfa] dark:bg-[#4f46e5]'
+            className='text-white px-4 py-2  mr-10 rounded-md transition-colors bg-[#a78bfa] dark:bg-[#4f46e5]'
           >
             Guardar Paciente
           </button>
         </div>
 
-        <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
+        <div className='grid grid-cols-1 sm:grid-cols-2 gap-4 overflow-x-auto -mr-6 pr-6'>
           {renderField("Cédula", "cedula")}
           {renderField("Nombre", "nombre")}
           {renderField("Apellido", "apellido")}
@@ -272,15 +274,6 @@ const NewPatientModal = ({ onClose }) => {
           {renderField("Email", "email")}
           {renderField("Referido por", "referido_por")}
           {renderField("Dirección", "direccion", true)}
-        </div>
-
-        <div className='flex justify-end pt-2'>
-          <button
-            onClick={onClose}
-            className='text-sm text-gray-600 dark:text-gray-300 hover:underline'
-          >
-            Cancelar
-          </button>
         </div>
       </div>
     </div>

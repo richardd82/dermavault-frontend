@@ -47,11 +47,11 @@ const Sidebar = ({ closeSidebar }) => {
       </nav>
 
       {/* Botón de Logout */}
-      <div className="flex-col w-full justify-end h-full p-8 hidden sm:block sm:w-full">
+      {/* <div className="flex-col w-full justify-end h-full p-8 hidden sm:block sm:w-full">
         <Button onClick={handleLogout} className="mt-auto p-2 rounded">
           Cerrar Sesión
         </Button>
-      </div>
+      </div> */}
     </div>
   );
 };

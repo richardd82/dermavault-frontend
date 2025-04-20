@@ -82,12 +82,12 @@ const Dashboard = () => {
         <p className="text-gray-500">Cargando información del usuario...</p>
       )}
 
-      <Button
+      {/* <Button
         className="mt-4 w-1/3" 
         onClick={handleLogout}
       >
         Cerrar Sesión
-      </Button>
+      </Button> */}
     </div>
   );
 };

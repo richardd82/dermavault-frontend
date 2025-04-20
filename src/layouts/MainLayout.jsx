@@ -17,8 +17,9 @@ export default function MainLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-
   const [setSearch] = useState("");
+  const [openUserMenu, setOpenUserMenu] = useState(false); // ← NUEVO
+  const menuRef = useRef(null);
 
   const {
     patientQuery,
@@ -47,9 +48,27 @@ export default function MainLayout() {
   }, [showResults]);
 
   useEffect(() => {
+    function handleClickOutside(e) {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setOpenUserMenu(false);
+      }
+    }
+    function handleEsc(e) {
+      if (e.key === "Escape") setOpenUserMenu(false);
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleEsc);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleEsc);
+    };
+  }, []);
+
+  useEffect(() => {
     const clean = debouncedQuery; // sin trim
     const isNumeric = /^\d+$/.test(clean);
-  
+
     if (isNumeric) {
       if (clean.length < 1) {
         setShowResults(false);
@@ -61,11 +80,16 @@ export default function MainLayout() {
         return;
       }
     }
-  
+
     searchPatients(clean);
     setShowResults(true);
   }, [debouncedQuery]);
   
+  useEffect(() => {
+    document.body.classList.add("overflow-hidden");
+    return () => document.body.classList.remove("overflow-hidden");
+  }, []);
+
   const handleKeyDown = (e) => {
     if (e.key === "-" || e.code === "Minus") {
       e.preventDefault(); // Evita que se escriba
@@ -80,17 +104,17 @@ export default function MainLayout() {
 
   const handleSearchChange = (e) => {
     const value = e.target.value;
-    
+
     setQuery(value); // ✅ actualiza estado del query
     if (value === "") {
       clearPatientSearch(); // 🔥 Limpiar resultados y resetear estado
       setShowResults(false);
       return;
     }
-      
+
     setShowResults(value.length >= 1);
   };
-  
+
   if (!user) return null;
   return (
     <div
@@ -105,8 +129,9 @@ export default function MainLayout() {
 
       <aside
         className={`fixed top-0 left-0 z-40 w-[250px] h-full bg-[#f8f9fa] dark:bg-[#2a2b2f] border-r border-gray-200 dark:border-gray-700 transform transition-transform duration-300 ease-in-out
-        ${sidebarOpen ? "translate-x-0" : "-translate-x-full"
-          } md:translate-x-0 md:static md:flex md:flex-col justify-end`}
+        ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        } md:translate-x-0 md:static md:flex md:flex-col justify-end`}
       >
         <div className='flex items-center h-[72px] md:h-[94px] px-3 text-xl md:text-lg font-bold bg-[#a78bfa] dark:bg-[#4f46e5] text-white w-full'>
           <div className='w-16 h-[37px] scale-150 overflow-hidden mr-2'>
@@ -116,16 +141,16 @@ export default function MainLayout() {
               className='object-contain -translate-y-1'
             />
           </div>
-            <span className='text-ellipsis whitespace-nowrap overflow-hidden max-w-[160px] md:max-w-[180px] lg:max-w-none'>
-              MedBox 2025
-            </span>
+          <span className='text-ellipsis whitespace-nowrap overflow-hidden max-w-[160px] md:max-w-[180px] lg:max-w-none'>
+            MedBox 2025
+          </span>
         </div>
 
         <Sidebar closeSidebar={() => setSidebarOpen(false)} />
       </aside>
 
       <div className='flex flex-col flex-1'>
-        <header className='flex flex-wrap items-center justify-between gap-4 px-4 py-3 md:px-16 md:py-4 bg-white dark:bg-[#2a2b2f] border-b border-gray-200 dark:border-gray-700'>
+        <header className='flex flex-wrap items-center justify-between gap-4 px-4 py-3 md:px-16 md:py-5 bg-white dark:bg-[#2a2b2f] border-b border-gray-200 dark:border-gray-700'>
           {/* === Izquierda: Botón + Buscador === */}
           <div className='flex-1 flex items-center gap-4'>
             <button
@@ -178,16 +203,65 @@ export default function MainLayout() {
           </div>
 
           {/* === Usuario y Toggle === */}
-          <div className='flex items-center gap-4'>
-            <div className='w-12 h-12 bg-gray-600 rounded-full flex items-center justify-center'>
-              <span className='text-xl font-bold'>
-                {user?.username[0].toUpperCase()}
+          <div className='relative flex items-center' ref={menuRef}>
+            {/* botón avatar + nombre */}
+            <button
+              onClick={() => setOpenUserMenu(!openUserMenu)}
+              className='flex items-center gap-2 focus:outline-none'
+              aria-haspopup='true'
+              aria-expanded={openUserMenu}
+            >
+              <div className='w-10 h-10 bg-gray-600 rounded-full flex items-center justify-center'>
+                <span className='text-lg font-bold'>
+                  {user?.username?.[0]?.toUpperCase()}
+                </span>
+              </div>
+              <span className='hidden sm:block text-sm font-medium'>
+                {user?.username}
               </span>
+            </button>
+
+            {/* MENÚ DESPLEGABLE */}
+            <div
+              className={`absolute right-0 top-12 w-44 origin-top-right rounded-md shadow-lg
+                bg-white dark:bg-[#2a2b2f] ring-1 ring-black/5 dark:ring-white/10
+                transition transform
+                ${
+                  openUserMenu
+                    ? "scale-100 opacity-100 z-50"
+                    : "scale-95 opacity-0 pointer-events-none"
+                }`}
+              style={{ transitionDuration: "120ms" }}
+            >
+              <button
+                onClick={() => {
+                  setOpenUserMenu(false);
+                  navigate("/profile"); // si tienes pantalla de perfil
+                }}
+                className='block w-full text-left px-4 py-2 text-sm
+                 text-[#1f2937] dark:text-gray-200
+                 hover:bg-[#a78bfa] dark:hover:bg-[#4f46e5]'
+              >
+                Perfil
+              </button>
+
+              <button
+                onClick={() => {
+                  useAuthStore.getState().logout(); // cierra sesión
+                  navigate("/"); // lleva al login
+                }}
+                className='block w-full text-left px-4 py-2 text-sm
+                 text-[#1f2937] dark:text-gray-200
+                 hover:bg-[#a78bfa] dark:hover:bg-[#4f46e5]'
+              >
+                Cerrar sesión
+              </button>
             </div>
-            <span className='text-sm md:text-base font-medium'>
-              {user?.username}
-            </span>
-            <ThemeToggle />
+
+            {/* interruptor de tema */}
+            <div className='ml-4'>
+              <ThemeToggle />
+            </div>
           </div>
         </header>
 
