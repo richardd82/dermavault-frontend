@@ -15,7 +15,7 @@ const formatDateForBackend = (dateString) => {
 const NewHistoryModal = ({ onClose, prefillCedula = "" }) => {
   const { createHistory } = useMedicalHistoryStore();
   const today = formatDateForBackend(new Date());
-  console.log(today, "today");
+  // console.log(today, "today");
   const [formData, setFormData] = useState({
     cedula: prefillCedula ? prefillCedula : "M-",
     clinical_data: {

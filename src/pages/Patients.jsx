@@ -25,8 +25,14 @@ const Patients = () => {
   const { patients, loading, error, fetchMorePatients, hasMore } =
     usePatientPaginationStore();
 
-  const { openPatientModal, showModal, patient, closePatientModal } =
-    usePatientStore();
+  const {
+    openPatientModal,
+    showModal,
+    patient,
+    closePatientModal,
+    patientsCount,
+    fetchPatientsCount,
+  } = usePatientStore();
 
   const {
     patientQuery,
@@ -45,7 +51,7 @@ const Patients = () => {
   const scrollContainerRef = useRef(null);
   const observer = useRef();
   const navigate = useNavigate();
-  
+
   useEffect(() => {
     getAllHistoryCedulas().then((hc) => {
       const map = new Map(hc.map((h) => [h.patient_id, h.cedula]));
@@ -59,6 +65,10 @@ const Patients = () => {
     }
     getAllHistoryCedulas();
     return () => clearPatientSearch();
+  }, []);
+
+  useEffect(() => {
+    fetchPatientsCount();
   }, []);
 
   const lastElementRef = useCallback(
@@ -92,7 +102,7 @@ const Patients = () => {
           .slice(0, 2)
           .join("")
       : "";
-
+  console.log("Pacientes:", patients);
   const handleHistoryClick = async (patient) => {
     try {
       const result = await getHistoryByCedula(patient.cedula);
@@ -116,18 +126,16 @@ const Patients = () => {
       <div className='w-16 h-16 border-4 border-t-transparent border-white rounded-full animate-spin'></div>
     </div>
   );
-  
 
   if (loadingPatients) return <Overlay />;
 
   return (
-    <div className='p-0 relative'>      
-
+    <div className='p-0 relative'>
       <div className='sticky top-0 z-20 bg-[#f8f9fa] dark:bg-[#1a1b1e] border-b border-gray-200 dark:border-gray-700'>
         <div className='flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 px-4 pt-4 pb-3'>
           <h1 className='text-2xl font-bold dark:text-[#e5e7eb]'>Pacientes</h1>
           <p className='text-1xl font-bold text-gray-600 dark:text-gray-300 mt-2'>
-            Mostrando {total} {total === 1 ? "registro" : "registros"}
+            Mostrando {total} {total === 1 ? "registro" : "registros"} de{" "}{patientsCount} pacientes
             {patientQuery && ` para "${patientQuery}"`}
           </p>
           <button

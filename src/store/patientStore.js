@@ -6,10 +6,21 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
 const usePatientStore = create((set, get) => ({
   patients: [],
+  patientsCount: 0,  
   loading: false,
   error: null,
   patient: null,
   showModal: false,
+
+  /* ---------- obtener SOLO el total ---------- */
+  fetchPatientsCount: async () => {
+    try {
+      const res = await api.get(`${API_URL}/patients/count`);
+      set({ patientsCount: res.data.count });   // asumiendo { count: 12345 }
+    } catch (err) {
+      set({ error: "Error al obtener el total de pacientes" });
+    }
+  },
 
   // Obtener todos los pacientes
   fetchPatients: async () => {
