@@ -28,9 +28,24 @@ const useMedicalHistoryStore = create((set, get) => ({
 
   updateHistory: async (id, data) => {
     const res = await api.put(`${API_URL}/histories/${id}`, data);
-    get().getHistories(); // Refresh
-    return res.data;
+    const updatedHistory = res.data.updatedHistory;
+  
+    set((state) => ({
+      histories: state.histories.map((h) =>
+        h.id === id ? updatedHistory : h
+      ),
+    }));
+  
+    return updatedHistory;
   },
+  
+  // updateHistory: async (id, data) => {
+  //   const res = await api.put(`${API_URL}/histories/${id}`, data);
+  //   set((state) => ({
+  //     histories: state.histories.map((h) => (h.id === id ? updated : h)),
+  //   }));
+  //   return res.data.updatedHistory;
+  // },
 
   deleteHistory: async (id) => {
     await api.delete(`${API_URL}/histories/${id}`);
@@ -48,10 +63,9 @@ const useMedicalHistoryStore = create((set, get) => ({
     }
   },
 
-selectedHistory: null,
-setSelectedHistory: (history) => set({ selectedHistory: history }),
-clearSelectedHistory: () => set({ selectedHistory: null }),
-
+  selectedHistory: null,
+  setSelectedHistory: (history) => set({ selectedHistory: history }),
+  clearSelectedHistory: () => set({ selectedHistory: null }),
 }));
 
 export default useMedicalHistoryStore;

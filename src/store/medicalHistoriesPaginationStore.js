@@ -38,6 +38,13 @@ const useMedicalHistoryPaginationStore = create((set, get) => ({
       set({ loading: false });
     }
   },
+  updateOneHistory: (updatedHistory) => {
+    set((state) => ({
+      histories: state.histories.map((h) =>
+        h.id === updatedHistory.id ? updatedHistory : h
+      ),
+    }));
+  },
 
   resetPagination: () => {
     set({
