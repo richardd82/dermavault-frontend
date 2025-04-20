@@ -42,7 +42,7 @@ const useSearchStore = create((set, get) => ({
     try {
       const res = await api.get(`${API_URL}/patients/search`, { params: { q: clean } });
   
-      console.log(res.data, "✅ Resultados de pacientes");
+      // console.log(res.data, "✅ Resultados de pacientes");
       set({ patientResults: res.data, loadingPatients: false });
     } catch (err) {
       console.error("❌ Error buscando pacientes:", err);

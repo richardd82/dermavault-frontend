@@ -5,6 +5,7 @@ import Modal from "../components/Modal";
 import AddUserForm from "../components/AddUserForm";
 import { useState } from "react";
 import EditUserForm from "../components/EditUserForm";
+import BackupModal from "../components/BackupModal";
 
 const getInitials = (first, last) => {
   return `${first[0] || ""}${last[0] || ""}`.toUpperCase();
@@ -16,6 +17,7 @@ const Users = () => {
   const [showModal, setShowModal] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [showBackupModal, setShowBackupModal] = useState(false);
 
   useEffect(() => {
     fetchUsers();
@@ -28,8 +30,15 @@ const Users = () => {
         <h1 className='text-xl sm:text-2xl font-semibold text-[#1f2937] dark:text-[#e5e7eb]'>
           Usuarios
         </h1>
+
         <button
-          className='bg-[#a78bfa] dark:bg-[#4f46e5] text-white px-4 py-2 rounded-lg hover:opacity-90 transition text-sm w-full sm:w-auto'
+          className='bg-[#a78bfa] dark:bg-[#4f46e5] text-gray-900 dark:text-gray-100 px-4 py-2 rounded-lg hover:opacity-70 transition text-sm'
+          onClick={() => setShowBackupModal(true)}
+        >
+          Respaldos
+        </button>
+        <button
+          className='bg-[#a78bfa] dark:bg-[#4f46e5] text-white px-4 py-2 rounded-lg hover:opacity-70 transition text-sm'
           onClick={() => setShowModal(true)}
         >
           + Nuevo Usuario
@@ -130,6 +139,15 @@ const Users = () => {
       >
         <AddUserForm onClose={() => setShowModal(false)} />
       </Modal>
+      {showBackupModal && (
+        <Modal
+          isOpen={showBackupModal}
+          onClose={() => setShowBackupModal(false)}
+          title='Respaldo del sistema'
+        >
+          <BackupModal onClose={() => setShowBackupModal(false)} />
+        </Modal>
+      )}
     </div>
   );
 };
