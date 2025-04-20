@@ -1,12 +1,9 @@
 import React from "react";
-// import useThemeStore from "../store/themeStore";
 import useUserStore from "../store/userStore";
-import { FaUserCircle } from "react-icons/fa";
 import { useEffect } from "react";
 import Modal from "../components/Modal";
 import AddUserForm from "../components/AddUserForm";
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import EditUserForm from "../components/EditUserForm";
 
 const getInitials = (first, last) => {
