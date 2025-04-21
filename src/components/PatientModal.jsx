@@ -121,35 +121,42 @@ const PatientModal = ({ patient, onClose }) => {
         className='fixed top-4 right-4 z-50'
       />
       <div className='bg-white dark:bg-[#1a1b1e] rounded-xl shadow-xl max-w-3xl w-full p-6 space-y-6 max-h-[90vh] md:max-h-[95vh] flex flex-col overflow-hidden'>
-        <div className='sticky z-20 -top-6 p-4 md:relative bg-white dark:bg-[#1a1b1e] flex justify-between items-center '>
-          <h2 className='text-xl font-bold text-gray-900 dark:text-gray-100'>
-            Información del Paciente
-          </h2>
-          <button
-            onClick={() => setShowAdminData(!showAdminData)}
-            className={clsx(
-              "text-white px-4 py-2 rounded-md transition-colors hover:opacity-60",
-              editMode
-                ? "bg-[#4f46e5] dark:bg-[#a78bfa]"
-                : "bg-[#a78bfa] dark:bg-[#4f46e5]"
-            )}
-          >
-            {showAdminData
-              ? "Ver Datos Generales"
-              : "Ver Datos Administrativos"}
-          </button>
+        <div className='sticky z-20 -top-6 p-4 md:relative bg-white dark:bg-[#1a1b1e] '>
+          {/* Línea superior: título + botón editar */}
+          <div className='flex justify-around items-center p-4'>
+            <h2 className='text-xl font-bold text-gray-900 dark:text-gray-100'>
+              Información del Paciente
+            </h2>
+            
+            </div>
+          {/* Línea inferior: botón de datos administrativos */}
+          <div className='flex justify-center scale-75 gap-4 sm:scale-100'>
+            <button
+              onClick={() => setShowAdminData(!showAdminData)}
+              className={clsx(
+                "text-white px-4 py-2 rounded-md transition-colors hover:opacity-60",
+                editMode
+                  ? "bg-[#4f46e5] dark:bg-[#a78bfa]"
+                  : "bg-[#a78bfa] dark:bg-[#4f46e5]"
+              )}
+            >
+              {showAdminData
+                ? "Ver Datos Generales"
+                : "Ver Datos Administrativos"}
+            </button>
+            <button
+              onClick={handleToggleEdit}
+              className={clsx(
+                "text-white px-4 py-2 rounded-md transition-colors hover:opacity-60",
+                editMode
+                  ? "bg-[#4f46e5] dark:bg-[#a78bfa]"
+                  : "bg-[#a78bfa] dark:bg-[#4f46e5]"
+              )}
+            >
+              {editMode ? "Guardar" : "Editar Paciente"}
+            </button>
+          </div>
 
-          <button
-            onClick={handleToggleEdit}
-            className={clsx(
-              "text-white px-4 py-2 rounded-md transition-colors hover:opacity-60",
-              editMode
-                ? "bg-[#4f46e5] dark:bg-[#a78bfa]"
-                : "bg-[#a78bfa] dark:bg-[#4f46e5]"
-            )}
-          >
-            {editMode ? "Guardar" : "Editar Paciente"}
-          </button>
         </div>
 
         {showAdminData ? (

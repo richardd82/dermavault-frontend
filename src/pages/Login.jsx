@@ -45,8 +45,8 @@ const Login = () => {
     <div className={`bg-[#f8f9fa] dark:bg-[#1a1b1e] transition-colors duration-500 ${theme}`}>
       <div className="w-screen h-screen flex flex-col md:flex-row">
         {/* Branding - Top on mobile / Left on desktop */}
-        <div className="w-full md:w-1/2 h-1/2 md:h-full flex flex-col items-center justify-center px-10 bg-[#a78bfa] dark:bg-[#4f46e5] text-white dark:text-[#f8f9fa]">
-          <div className="w-[300px] h-[300px] md:w-[400px] md:h-[400px] flex items-center justify-center">            
+        <div className="w-full md:w-1/2 h-[45%] md:h-full flex flex-col items-center justify-center px-10 bg-[#a78bfa] dark:bg-[#4f46e5] text-white dark:text-[#f8f9fa]">
+          <div className="w-[300px] h-[250px] md:w-[400px] md:h-[400px] flex items-center justify-center">            
             <img src={logoImg} alt="Logo" />
           </div>
           <h1 className="text-3xl md:text-xl lg:text-3xl font-bold mb-4">Dr. Charles Meurehg Haik</h1>

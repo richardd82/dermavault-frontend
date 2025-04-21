@@ -120,14 +120,14 @@ const HistoryDetailModal = ({ history, onClose }) => {
 
   return (
     <div className='fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm'>
-        <CloseModalButton onClick={onClose} className="fixed top-4 right-4 z-50"/>      
+        <CloseModalButton onClick={onClose} className="fixed top-4 right-1 sm:right-4 z-50"/>      
       <div className='bg-white dark:bg-[#1a1b1e] w-full max-w-4xl rounded-lg shadow-lg flex flex-col overflow-y-hidden max-h-[90vh] pr-6 pl-6 pb-14 space-y-6'>
         <div className='sticky top-0 z-20 mt-4'>
           <div className=' flex justify-between items-center border-b pb-5 bg-white dark:bg-[#1a1b1e] '>
             <h2 className='text-xl font-bold text-gray-900 dark:text-white'>
               Detalles de la Historia Clínica
             </h2>
-            <div className='space-x-2 z-0'>
+            <div className=' scale-75 sm:scale-100 space-x-2 z-0'>
               <button
                 onClick={editMode ? handleSave : () => setEditMode(true)}
                 className={clsx(
