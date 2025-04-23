@@ -59,6 +59,19 @@ const HistoryDetailModal = ({ history, onClose }) => {
     Diagnosis,
     EvolutionDates,
   } = formData;
+
+  useEffect(() => {
+    if (editMode) {
+      setTimeout(() => {
+        const textareas = document.querySelectorAll("textarea");
+        textareas.forEach((ta) => {
+          ta.style.height = "auto";
+          ta.style.height = `${ta.scrollHeight}px`;
+        });
+      }, 0); // espera al render
+    }
+  }, [editMode]);
+
   useEffect(() => {
     if (editMode) {
       // Ajustar todos los textareas al contenido existente
@@ -110,7 +123,17 @@ const HistoryDetailModal = ({ history, onClose }) => {
         ...(prev.EvolutionDates || []),
       ],
     }));
+    setTimeout(() => {
+      requestAnimationFrame(() => {
+        const textareas = document.querySelectorAll("textarea");
+        textareas.forEach((ta) => {
+          ta.style.height = "auto";
+          ta.style.height = `${ta.scrollHeight}px`;
+        });
+      });
+    }, 0);;
   };
+
   const sortedEvolutionDates = formData.EvolutionDates?.map((item, index) => ({
     ...item,
     sortedIndex: index,
@@ -391,7 +414,16 @@ const HistoryDetailModal = ({ history, onClose }) => {
                             }));
                           }
                         }}
-                        className='w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white resize-none'
+                        onInput={(e) => {
+                          e.target.style.height = "auto";
+                          e.target.style.height = `${e.target.scrollHeight}px`;
+                        }}
+                        className='w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white resize-none overflow-hidden'
+                        style={{
+                          minHeight: "2.5rem",
+                          overflow: "hidden",
+                          height: "auto",
+                        }}
                       />
                     ) : (
                       <div
