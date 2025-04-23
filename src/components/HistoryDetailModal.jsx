@@ -72,15 +72,15 @@ const HistoryDetailModal = ({ history, onClose }) => {
 
   const handleSave = async () => {
     const { id } = history;
-    // console.log("🧾 FormData antes de enviar:", formData); 
+    // console.log("🧾 FormData antes de enviar:", formData);
     const cleanEvolutionDates = Array.isArray(formData.EvolutionDates)
-  ? formData.EvolutionDates.map(({ id, date, observation }) => ({
-      ...(id && { id }),
-      date,
-      observation
-    }))
-  : [];
-    
+      ? formData.EvolutionDates.map(({ id, date, observation }) => ({
+          ...(id && { id }),
+          date,
+          observation,
+        }))
+      : [];
+
     const payload = {
       clinical_data: formData.ClinicalData,
       allergies: formData.Allergy,
@@ -88,7 +88,7 @@ const HistoryDetailModal = ({ history, onClose }) => {
       diagnosis: formData.Diagnosis,
       EvolutionDates: cleanEvolutionDates,
     };
-    
+
     console.log("✅ Payload enviado:", payload);
     try {
       const updated = await updateHistory(id, payload);
@@ -111,16 +111,19 @@ const HistoryDetailModal = ({ history, onClose }) => {
       ],
     }));
   };
-  const datesSorted = [...(formData.EvolutionDates || [])]
-  .sort((a, b) => new Date(b.date) - new Date(a.date));
+  const datesSorted = [...(formData.EvolutionDates || [])].sort(
+    (a, b) => new Date(b.date) - new Date(a.date)
+  );
 
   const formatDate = (isoDate) =>
     new Date(isoDate).toLocaleDateString("es-MX", { timeZone: "UTC" });
-  
 
   return (
     <div className='fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm'>
-        <CloseModalButton onClick={onClose} className="fixed top-4 right-1 sm:right-4 z-50"/>      
+      <CloseModalButton
+        onClick={onClose}
+        className='fixed top-4 right-1 sm:right-4 z-50'
+      />
       <div className='bg-white dark:bg-[#1a1b1e] w-full max-w-4xl rounded-lg shadow-lg flex flex-col overflow-y-hidden max-h-[90vh] pr-6 pl-6 pb-14 space-y-6'>
         <div className='sticky top-0 z-20 mt-4'>
           <div className=' flex justify-between items-center border-b pb-5 bg-white dark:bg-[#1a1b1e] '>
@@ -378,9 +381,12 @@ const HistoryDetailModal = ({ history, onClose }) => {
                         className='w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white resize-none'
                       />
                     ) : (
-                      <div className='bg-gray-100 dark:bg-gray-800 px-3 py-2 rounded-md text-sm text-gray-900 dark:text-white'>
-                        {evo.observation || "Sin observaciones"}
-                      </div>
+                      <textarea
+                        value={evo.observation || "Sin observaciones"}
+                        readOnly
+                        rows={2}
+                        className='w-full px-3 py-2 border border-transparent dark:border-transparent rounded-md bg-gray-100 dark:bg-gray-800 text-sm text-gray-900 dark:text-white resize-none overflow-hidden'
+                      />
                     )}
                   </div>
                 </div>
