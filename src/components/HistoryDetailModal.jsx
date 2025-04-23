@@ -111,9 +111,10 @@ const HistoryDetailModal = ({ history, onClose }) => {
       ],
     }));
   };
-  const datesSorted = [...(formData.EvolutionDates || [])].sort(
-    (a, b) => new Date(b.date) - new Date(a.date)
-  );
+  const sortedEvolutionDates = formData.EvolutionDates?.map((item, index) => ({
+    ...item,
+    sortedIndex: index,
+  })).sort((a, b) => new Date(b.date) - new Date(a.date));
 
   const formatDate = (isoDate) =>
     new Date(isoDate).toLocaleDateString("es-MX", { timeZone: "UTC" });
@@ -328,11 +329,10 @@ const HistoryDetailModal = ({ history, onClose }) => {
               )}
             </div>
 
-            {Array.isArray(formData?.EvolutionDates) &&
-            formData.EvolutionDates.length > 0 ? (
-              datesSorted.map((evo, index) => (
+            {sortedEvolutionDates.length > 0 ? (
+              sortedEvolutionDates.map((evo, idx) => (
                 <div
-                  key={index}
+                  key={evo.id || idx} // También arreglé el "index" que no estaba definido, debe ser "idx"
                   className='flex flex-col md:flex-row md:items-start md:gap-8 gap-4 border-b border-gray-200 dark:border-gray-700 py-2'
                 >
                   {/* Fecha */}
@@ -345,12 +345,18 @@ const HistoryDetailModal = ({ history, onClose }) => {
                         type='date'
                         value={evo.date}
                         onChange={(e) => {
-                          const updated = [...formData.EvolutionDates];
-                          updated[index].date = e.target.value;
-                          setFormData((prev) => ({
-                            ...prev,
-                            EvolutionDates: updated,
-                          }));
+                          const indexInOriginal =
+                            formData.EvolutionDates.findIndex(
+                              (item) => item.id === evo.id
+                            );
+                          if (indexInOriginal !== -1) {
+                            const updated = [...formData.EvolutionDates];
+                            updated[indexInOriginal].date = e.target.value;
+                            setFormData((prev) => ({
+                              ...prev,
+                              EvolutionDates: updated,
+                            }));
+                          }
                         }}
                         className='px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white'
                       />
@@ -368,25 +374,37 @@ const HistoryDetailModal = ({ history, onClose }) => {
                     </label>
                     {editMode ? (
                       <textarea
-                        rows={2}
+                        rows={1}
                         value={evo.observation}
                         onChange={(e) => {
-                          const updated = [...formData.EvolutionDates];
-                          updated[index].observation = e.target.value;
-                          setFormData((prev) => ({
-                            ...prev,
-                            EvolutionDates: updated,
-                          }));
+                          const indexInOriginal =
+                            formData.EvolutionDates.findIndex(
+                              (item) => item.id === evo.id
+                            );
+                          if (indexInOriginal !== -1) {
+                            const updated = [...formData.EvolutionDates];
+                            updated[indexInOriginal].observation =
+                              e.target.value;
+                            setFormData((prev) => ({
+                              ...prev,
+                              EvolutionDates: updated,
+                            }));
+                          }
                         }}
                         className='w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white resize-none'
                       />
                     ) : (
-                      <textarea
-                        value={evo.observation || "Sin observaciones"}
-                        readOnly
-                        rows={2}
-                        className='w-full px-3 py-2 border border-transparent dark:border-transparent rounded-md bg-gray-100 dark:bg-gray-800 text-sm text-gray-900 dark:text-white resize-none overflow-hidden'
-                      />
+                      <div
+                        className='w-full px-3 py-2 border border-transparent dark:border-transparent rounded-md bg-gray-100 dark:bg-gray-800 text-sm text-gray-900 dark:text-white'
+                        style={{
+                          whiteSpace: "pre-wrap",
+                          wordBreak: "break-word",
+                          overflowWrap: "break-word",
+                          overflow: "hidden",
+                        }}
+                      >
+                        {evo.observation || "Sin observaciones"}
+                      </div>
                     )}
                   </div>
                 </div>
