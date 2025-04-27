@@ -199,26 +199,6 @@ const NewHistoryModal = ({ onClose, prefillCedula = "" }) => {
     </section>
   );
 
-  // const renderFields = (section, sectionLabel, fields) => (
-  //   <div className="border-t border-gray-300 dark:border-gray-600 pt-4">
-  //     <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">{sectionLabel}</h3>
-  //     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-  //       {fields.map(({ label, name }) => (
-  //         <div key={name} className="flex flex-col">
-  //           <label className="text-sm text-gray-700 dark:text-gray-300">{label}</label>
-  //           <input
-  //             type="text"
-  //             name={name}
-  //             value={formData[section][name]}
-  //             onChange={(e) => handleChange(section, name, e.target.value)}
-  //             className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
-  //           />
-  //         </div>
-  //       ))}
-  //     </div>
-  //   </div>
-  // );
-
   return (
     <div className='fixed inset-0 bg-black/40 z-50 flex items-center justify-center px-4 backdrop-blur-sm'>
       <CloseModalButton onClick={onClose} className='fixed top-4 right-4' />
@@ -229,13 +209,14 @@ const NewHistoryModal = ({ onClose, prefillCedula = "" }) => {
           </h2>
           <button
                 type='submit'
+                onClick={handleSubmit}
                 className='bg-[#a78bfa] dark:bg-[#4f46e5] text-white px-4 py-2 rounded-md text-sm'
               >
                 Guardar
               </button>
         </div>
         <div className='mt-6 flex-1 overflow-y-auto pr-6 -mr-6'>
-          <form onSubmit={handleSubmit} className='space-y-6'>
+          <form className='space-y-6'>
             {/* Cédula */}
             <div className='flex flex-col'>
               <label className='text-sm text-gray-700 dark:text-gray-300'>

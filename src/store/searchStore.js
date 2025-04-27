@@ -97,61 +97,35 @@ const useSearchStore = create((set, get) => ({
   },
   
   // Mantén esta función que agregamos antes
+  // updateOneSearchResult: (updatedHistory) => {
+  //   set((state) => ({
+  //     historyResults: state.historyResults.map((h) =>
+  //       h.id === updatedHistory.id ? updatedHistory : h
+  //     ),
+  //   }));
+  // },
   updateOneSearchResult: (updatedHistory) => {
-    set((state) => ({
-      historyResults: state.historyResults.map((h) =>
+    set((state) => {
+      // ** Verificación clave: Asegura que historyResults sea un array antes de mapear **
+      if (!Array.isArray(state.historyResults)) {
+        console.error("useSearchStore: state.historyResults no es un array al intentar actualizar un resultado:", state.historyResults);
+        // En este caso, no podemos usar .map. Simplemente retornamos el estado actual
+        // sin hacer la actualización en searchResults para evitar el error.
+        // El usuario verá el dato actualizado al hacer una nueva búsqueda.
+        return state;
+      }
+
+      // Si es un array, procedemos a mapear y actualizar la historia específica
+      const updatedResults = state.historyResults.map((h) =>
         h.id === updatedHistory.id ? updatedHistory : h
-      ),
-    }));
+      );
+
+      return {
+        historyResults: updatedResults,
+      };
+    });
   },
   
-  // ... otras funciones y estados del store ...
-  // searchHistoriesInDB: async (query) => {
-  //   set({ loadingHistoriesSearch: true });
-  //   const clean = query.trim();
-  //   const isNumeric = /^\d+$/.test(clean);
-
-  //   if ((isNumeric && clean.length < 1) || (!isNumeric && clean.length < 3)) {
-  //     set({ loadingHistoriesSearch: false });
-  //     return [];
-  //   }
-
-  //   try {
-  //     const res = await api.get(`${API_URL}/histories/search-exact`, {
-  //       params: { q: clean },
-  //     });
-  //     return res.data.data || [];
-  //   } catch (error) {
-  //     console.error("Error buscando en la base de datos:", error);
-  //     return [];
-  //   } finally {
-  //     set({ loadingHistoriesSearch: false });
-  //   }
-  // },
-
-  // searchHistoriesInDB: async (query) => {
-  //   set({ loadingHistoriesSearch: true });
-  //   const clean = query.trim();
-  //   const isNumeric = /^\d+$/.test(clean);
-
-  //   if ((isNumeric && clean.length < 1) || (!isNumeric && clean.length < 3)) {
-  //     return set({ historyResults: [], loadingHistoriesSearch: false });
-  //   }
-
-  //   try {
-  //     const res = await api.get(`${API_URL}/histories/search`, {
-  //       params: { q: clean }
-  //     });
-  //     set({ historyResults: res.data, loadingHistoriesSearch: false });
-
-  //   } catch (error) {
-  //     console.error("Error buscando en la base de datos:", error);
-  //     return [];
-  //   } finally {
-  //     set({ loadingHistoriesSearch: false });
-  //   }
-  // },
-
   getAllHistoryCedulas: async () => {
     const { historyCedulas } = get(); // Obtener el estado actual de historyCedulas
     if (historyCedulas?.length > 0) return historyCedulas;
@@ -208,58 +182,3 @@ const useSearchStore = create((set, get) => ({
 }));
 
 export default useSearchStore;
-
-// // store/searchStore.js
-// import { create } from 'zustand';
-// import api from '../hooks/axiosConfig';
-
-// const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
-
-// const useSearchStore = create((set) => ({
-//   query: '',
-//   results: [],
-//   loading: false,
-//   error: null,
-//   selectedPatient: null,
-
-//   setQuery: async (query) => {
-//     set({ query, loading: true, error: null });
-
-//     try {
-//       const res = await api.get(`${API_URL}/patients/search`, {
-//         params: { q: query },
-//       });
-//       set({ results: res.data, loading: false });
-//     } catch (err) {
-//       set({ error: err.message, loading: false });
-//     }
-//   },
-
-//   searchHistories: async (query) => {
-//     if (!query || query.length < 2) return;
-//     try {
-//       const res = await api.get(`${API_URL}/histories/search`, {
-//         params: { q: query }, // ✅ Aquí pasamos el parámetro de búsqueda
-//       });
-//       set({ results: res.data.data }); // o `histories`, según cómo lo manejes
-//     } catch (error) {
-//       console.error("Error buscando historias:", error);
-//     }
-//   },
-//   filteredHistories: state.histories.filter((history) => {
-//     const fullName = `${history?.Patient?.nombre || ''} ${history?.Patient?.apellido || ''}`.toLowerCase();
-//     const cedula = history?.Patient?.cedula?.toLowerCase();
-//     const padecimiento = history?.ClinicalData?.padecimiento_actual?.toLowerCase();
-//     return (
-//       fullName.includes(lowerQuery) ||
-//       cedula?.includes(lowerQuery) ||
-//       padecimiento?.includes(lowerQuery)
-//     );
-//   }),
-
-//   clearSearch: () => set({ query: '', results: [] }),
-//   setSelectedPatient: (patient) => set({ selectedPatient: patient }),
-//   clearSelectedPatient: () => set({ selectedPatient: null }),
-// }));
-
-// export default useSearchStore;
