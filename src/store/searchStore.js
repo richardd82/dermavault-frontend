@@ -1,23 +1,22 @@
-import { create } from 'zustand';
-import api from '../hooks/axiosConfig';
+import { create } from "zustand";
+import api from "../hooks/axiosConfig";
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 
 const useSearchStore = create((set, get) => ({
   // Pacientes
-  patientQuery: '',
+  patientQuery: "",
   patientResults: [],
   loadingPatients: false,
   errorPatients: null,
 
   // Historias clínicas
-  historyQuery: '',
+  historyQuery: "",
   historyResults: [],
   loadingHistories: false,
   errorHistories: null,
   historyCedulas: [],
   loadingHistoriesSearch: false,
-
 
   // Paciente seleccionado (para modal, por ejemplo)
   selectedPatient: null,
@@ -25,37 +24,51 @@ const useSearchStore = create((set, get) => ({
   // ======== Funciones de búsqueda ========
   // ✅ Solo actualiza la query (texto que se escribe)
   setQuery: (patientQuery) => set({ patientQuery }),
-  
+
   searchPatients: async (query) => {
-    set({ patientQuery: query, loadingPatients: true, errorPatients: null, patientResults: [] });
+    set({
+      patientQuery: query,
+      loadingPatients: true,
+      errorPatients: null,
+      patientResults: [],
+    });
     // console.log(get().patientResults, 'patientResults');
     const clean = query?.trim() || "";
     const isNumeric = /^\d+$/.test(clean);
-  
+
     // Condiciones mínimas para lanzar búsqueda
     if ((isNumeric && clean.length < 1) || (!isNumeric && clean.length < 3)) {
       return set({ patientResults: [], loadingPatients: false });
     }
-  
+
     // Inicia búsqueda
-  
+
     try {
-      const res = await api.get(`${API_URL}/patients/search`, { params: { q: clean } });
-  
+      const res = await api.get(`${API_URL}/patients/search`, {
+        params: { q: clean },
+      });
+
       // console.log(res.data, "✅ Resultados de pacientes");
       set({ patientResults: res.data, loadingPatients: false });
     } catch (err) {
       console.error("❌ Error buscando pacientes:", err);
-      set({ errorPatients: err.message, loadingPatients: false, patientResults: [] });
+      set({
+        errorPatients: err.message,
+        loadingPatients: false,
+        patientResults: [],
+      });
     }
   },
-  
+
   searchHistories: async (query) => {
     set({ historyQuery: query, loadingHistories: true, errorHistories: null });
-    if (!query || query.length < 2) return set({ historyResults: [], loadingHistories: false });
+    if (!query || query.length < 2)
+      return set({ historyResults: [], loadingHistories: false });
 
     try {
-      const res = await api.get(`${API_URL}/histories/search`, { params: { q: query } });
+      const res = await api.get(`${API_URL}/histories/search`, {
+        params: { q: query },
+      });
       set({ historyResults: res.data.data, loadingHistories: false });
     } catch (error) {
       set({ errorHistories: error.message, loadingHistories: false });
@@ -63,37 +76,68 @@ const useSearchStore = create((set, get) => ({
   },
 
   searchHistoriesInDB: async (query) => {
-    set({ loadingHistoriesSearch: true });
+    set({ loadingHistoriesSearch: true, historyResults: [] }); // Limpiar resultados anteriores al buscar
     const clean = query.trim();
     const isNumeric = /^\d+$/.test(clean);
-
+  
     if ((isNumeric && clean.length < 1) || (!isNumeric && clean.length < 3)) {
       set({ loadingHistoriesSearch: false });
-      return [];
+      return []; // Retornar array vacío si la query es muy corta
     }
-
-    
-
+  
     try {
       const res = await api.get(`${API_URL}/histories/search-exact`, { params: { q: clean } });
+      set({ historyResults: res.data.data || [], loadingHistoriesSearch: false }); // <-- Guardar resultados aquí
       return res.data.data || [];
     } catch (error) {
       console.error("Error buscando en la base de datos:", error);
-      return [];
-    } finally {
-      set({ loadingHistoriesSearch: false });
+      set({ loadingHistoriesSearch: false, historyResults: [] }); // Limpiar resultados y quitar loading en caso de error
+      throw error; // Propagar el error si es necesario
     }
   },
+  
+  // Mantén esta función que agregamos antes
+  updateOneSearchResult: (updatedHistory) => {
+    set((state) => ({
+      historyResults: state.historyResults.map((h) =>
+        h.id === updatedHistory.id ? updatedHistory : h
+      ),
+    }));
+  },
+  
+  // ... otras funciones y estados del store ...
+  // searchHistoriesInDB: async (query) => {
+  //   set({ loadingHistoriesSearch: true });
+  //   const clean = query.trim();
+  //   const isNumeric = /^\d+$/.test(clean);
+
+  //   if ((isNumeric && clean.length < 1) || (!isNumeric && clean.length < 3)) {
+  //     set({ loadingHistoriesSearch: false });
+  //     return [];
+  //   }
+
+  //   try {
+  //     const res = await api.get(`${API_URL}/histories/search-exact`, {
+  //       params: { q: clean },
+  //     });
+  //     return res.data.data || [];
+  //   } catch (error) {
+  //     console.error("Error buscando en la base de datos:", error);
+  //     return [];
+  //   } finally {
+  //     set({ loadingHistoriesSearch: false });
+  //   }
+  // },
 
   // searchHistoriesInDB: async (query) => {
   //   set({ loadingHistoriesSearch: true });
   //   const clean = query.trim();
   //   const isNumeric = /^\d+$/.test(clean);
-  
+
   //   if ((isNumeric && clean.length < 1) || (!isNumeric && clean.length < 3)) {
   //     return set({ historyResults: [], loadingHistoriesSearch: false });
   //   }
-  
+
   //   try {
   //     const res = await api.get(`${API_URL}/histories/search`, {
   //       params: { q: clean }
@@ -107,15 +151,15 @@ const useSearchStore = create((set, get) => ({
   //     set({ loadingHistoriesSearch: false });
   //   }
   // },
-  
+
   getAllHistoryCedulas: async () => {
     const { historyCedulas } = get(); // Obtener el estado actual de historyCedulas
     if (historyCedulas?.length > 0) return historyCedulas;
-  
+
     try {
       const res = await api.get(`${API_URL}/histories/cedulas`);
       const data = res.data?.data || [];
-  
+
       set({ historyResults: res.data, loadingHistoriesSearch: false });
       return data;
     } catch (err) {
@@ -125,15 +169,33 @@ const useSearchStore = create((set, get) => ({
     }
   },
 
+  updateOneSearchResult: (updatedHistory) => {
+    set((state) => ({
+      historyResults: state.historyResults.map((h) =>
+        h.id === updatedHistory.id ? updatedHistory : h
+      ),
+    }));
+  },
+
   setHistoryQuery: (query) => set({ historyQuery: query }),
   setHistoriesInDB: (query) => set({ historyResults: query }),
   // ======== Limpiar búsqueda ========
 
   clearPatientSearch: () =>
-    set({ patientQuery: '', patientResults: [], loadingPatients: false, errorPatients: null }),
+    set({
+      patientQuery: "",
+      patientResults: [],
+      loadingPatients: false,
+      errorPatients: null,
+    }),
 
   clearHistorySearch: () =>
-    set({ historyQuery: '', historyResults: [], loadingHistories: false, errorHistories: null }),
+    set({
+      historyQuery: "",
+      historyResults: [],
+      loadingHistories: false,
+      errorHistories: null,
+    }),
 
   clearHistoryCedulas: () => set({ historyCedulas: [] }),
 
@@ -141,7 +203,8 @@ const useSearchStore = create((set, get) => ({
 
   setSelectedPatient: (patient) => set({ selectedPatient: patient }),
   clearSelectedPatient: () => set({ selectedPatient: null }),
-  setLoadingHistoriesSearch: (loading) => set({ loadingHistoriesSearch: loading }),
+  setLoadingHistoriesSearch: (loading) =>
+    set({ loadingHistoriesSearch: loading }),
 }));
 
 export default useSearchStore;
@@ -192,7 +255,7 @@ export default useSearchStore;
 //       cedula?.includes(lowerQuery) ||
 //       padecimiento?.includes(lowerQuery)
 //     );
-//   }),  
+//   }),
 
 //   clearSearch: () => set({ query: '', results: [] }),
 //   setSelectedPatient: (patient) => set({ selectedPatient: patient }),

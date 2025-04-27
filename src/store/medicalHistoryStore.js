@@ -27,18 +27,50 @@ const useMedicalHistoryStore = create((set, get) => ({
   },
 
   updateHistory: async (id, data) => {
-    const res = await api.put(`${API_URL}/histories/${id}`, data);
-    const updatedHistory = res.data.updatedHistory;
-  
-    set((state) => ({
-      histories: state.histories.map((h) =>
-        h.id === id ? updatedHistory : h
-      ),
-    }));
-  
-    return updatedHistory;
+    try {
+      // Agrega try...catch para mejor manejo de errores en el store también
+      const res = await api.put(`${API_URL}/histories/${id}`, data ); // Corregido aquí
+      const updatedHistory = res.data.updatedHistory;
+
+      set((state) => ({
+        histories: state.histories.map((h) =>
+          h.id === updatedHistory.id ? updatedHistory : h
+        ),
+      }));
+
+      return updatedHistory; // Asegúrate de retornar la historia actualizada
+    } catch (error) {
+      console.error("Error updating history in store:", error);
+      throw error; // Re-lanza el error para que el modal lo capture
+    }
   },
-  
+
+  // updateHistory: async (id, data) => {
+  //   const res = await api.put(`${API_URL}/histories/:id`, data);
+  //   const updatedHistory = res.data.updatedHistory;
+
+  //   set((state) => ({
+  //     histories: state.histories.map((h) =>
+  //       h.id === id ? updatedHistory : h
+  //     ),
+  //   }));
+
+  //   return updatedHistory;
+  // },
+
+  // updateHistory: async (id, data) => {
+  //   const res = await api.put(`${API_URL}/histories/${id}`, data);
+  //   const updatedHistory = res.data.updatedHistory;
+
+  //   set((state) => ({
+  //     histories: state.histories.map((h) =>
+  //       h.id === id ? updatedHistory : h
+  //     ),
+  //   }));
+
+  // return updatedHistory;
+  // },
+
   // updateHistory: async (id, data) => {
   //   const res = await api.put(`${API_URL}/histories/${id}`, data);
   //   set((state) => ({

@@ -5,6 +5,8 @@ import { useEffect } from "react";
 import useMedicalHistoryStore from "../store/medicalHistoryStore";
 import useMedicalHistoryPaginationStore from "../store/medicalHistoriesPaginationStore";
 import CloseModalButton from "./CloseModalButton";
+import useSearchStore from "../store/searchStore";
+import toast from "react-hot-toast";
 
 //Maneja los valores de las historias clínicas en modo View y muestra inputs en modo Edit
 const LabelValue = ({ label, value, editMode, name, onChange }) => (
@@ -44,6 +46,7 @@ const HistoryDetailModal = ({ history, onClose }) => {
     EvolutionDates: history.EvolutionDates || [],
   }));
   const { updateOneHistory } = useMedicalHistoryPaginationStore();
+  const { updateOneSearchResult } = useSearchStore();
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -109,9 +112,12 @@ const HistoryDetailModal = ({ history, onClose }) => {
       // 👇 Este paso evita que el modal se quede con datos viejos o en blanco
       setFormData(updated); //✅
       updateOneHistory(updated);
+      updateOneSearchResult(updated); // Update search store
       setEditMode(false);
+      toast.success("Historia clínica actualizada correctamente"); 
     } catch (error) {
       console.error("Error al guardar cambios:", error);
+      toast.error("Hubo un error al guardar los cambios. Intenta de nuevo." + " " + error.message);
     }
   };
 
