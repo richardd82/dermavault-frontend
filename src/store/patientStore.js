@@ -47,15 +47,35 @@ const usePatientStore = create((set, get) => ({
   editPatient: async (id, updatedData) => {
     try {
       const res = await api.put(`${API_URL}/patients/patient/${id}`, updatedData);
+      
+      // Asegurar que la respuesta incluya la cédula
+      const updatedPatient = { 
+        ...res.data,
+        cedula: res.data.cedula || updatedData.cedula // Fallback por si la API no la retorna
+      };
+  
       const updatedList = get().patients.map(patient =>
-        patient.id === id ? res.data : patient
+        patient.cedula === updatedPatient.cedula ? updatedPatient : patient
       );
-      set({ patients: updatedList, patient: res.data });
-      return { success: true };
+      
+      set({ patients: updatedList, patient: updatedPatient });
+      return { success: true, data: updatedPatient };
     } catch (err) {
-      return { success: false, message: err.message || "Error al actualizar usuario" };
+      return { success: false, message: err.message };
     }
   },
+  // editPatient: async (id, updatedData) => {
+  //   try {
+  //     const res = await api.put(`${API_URL}/patients/patient/${id}`, updatedData);
+  //     const updatedList = get().patients.map(patient =>
+  //       patient.id === id ? res.data : patient
+  //     );
+  //     set({ patients: updatedList, patient: res.data });
+  //     return { success: true };
+  //   } catch (err) {
+  //     return { success: false, message: err.message || "Error al actualizar usuario" };
+  //   }
+  // },
 
   // Control modal
   openPatientModal: (patient) => set({ patient, showModal: true }),

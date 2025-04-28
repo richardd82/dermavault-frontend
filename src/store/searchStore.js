@@ -60,6 +60,16 @@ const useSearchStore = create((set, get) => ({
     }
   },
 
+  updateOnePatientResult: (updatedPatient) => {
+    set((state) => ({
+      patientResults: state.patientResults.map((p) =>
+        p.id === updatedPatient.id ? updatedPatient : p
+      ),
+    }));
+  },
+
+  /******************Medical Histories************************* */
+
   searchHistories: async (query) => {
     set({ historyQuery: query, loadingHistories: true, errorHistories: null });
     if (!query || query.length < 2)
@@ -150,6 +160,32 @@ const useSearchStore = create((set, get) => ({
       ),
     }));
   },
+
+  updateOnePatientResult: (updatedPatient) => {
+    set((state) => {
+      // Validar cédula
+      if (!updatedPatient?.cedula) return state;
+  
+      // Actualizar patientResults
+      const updatedResults = Array.isArray(state.patientResults) 
+        ? state.patientResults.map(p => 
+            p.cedula === updatedPatient.cedula ? updatedPatient : p
+          ) 
+        : [];
+  
+      // Actualizar selectedPatient
+      const updatedSelectedPatient = 
+        state.selectedPatient?.cedula === updatedPatient.cedula 
+          ? updatedPatient 
+          : state.selectedPatient;
+  
+      return {
+        patientResults: updatedResults,
+        selectedPatient: updatedSelectedPatient,
+      };
+    });
+  },
+
 
   setHistoryQuery: (query) => set({ historyQuery: query }),
   setHistoriesInDB: (query) => set({ historyResults: query }),

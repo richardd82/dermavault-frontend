@@ -9,6 +9,7 @@ const usePatientPaginationStore = create((set, get) => ({
   limit: 100,
   hasMore: true,
   loading: false,
+  total: 0,
 
   fetchMorePatients: async () => {
     const { offset, limit, hasMore, loading, patients } = get();
@@ -27,12 +28,27 @@ const usePatientPaginationStore = create((set, get) => ({
         patients: [...patients, ...newPatients],
         offset: offset + limit,
         hasMore: response.data.hasMore ?? newPatients.length === limit,
+        total: response.data.total ?? get().total,
         loading: false,
       });
     } catch (error) {
       console.error("❌ Error al cargar pacientes:", error);
       set({ loading: false });
     }
+  },
+
+  updateOnePatient: (updatedPatient) => {
+    set((state) => {
+      // Filtra pacientes inválidos y actualiza por cédula
+      const cleanPatients = (state.patients || [])
+        .filter(p => p && p.cedula !== undefined && p.cedula !== null);
+  
+      return {
+        patients: cleanPatients.map(p => 
+          p.cedula === updatedPatient.cedula ? updatedPatient : p
+        ),
+      };
+    });
   },
 
   resetPagination: () => {
