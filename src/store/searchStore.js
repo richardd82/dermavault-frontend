@@ -153,13 +153,24 @@ const useSearchStore = create((set, get) => ({
     }
   },
 
-  updateOneSearchResult: (updatedHistory) => {
-    set((state) => ({
-      historyResults: state.historyResults.map((h) =>
-        h.id === updatedHistory.id ? updatedHistory : h
+  updateOneSearchResult: (updatedHistory) => set((state) => {
+    if (!Array.isArray(state.historyResults)) {
+      console.error('Error: historyResults no es un array.', state.historyResults);
+      return {}; // O simplemente no hacer nada
+    }
+    return {
+      historyResults: state.historyResults.map((history) =>
+        history.id === updatedHistory.id ? updatedHistory : history
       ),
-    }));
-  },
+    };
+  }),
+  // updateOneSearchResult: (updatedHistory) => {
+  //   set((state) => ({
+  //     historyResults: state.historyResults.map((h) =>
+  //       h.id === updatedHistory.id ? updatedHistory : h
+  //     ),
+  //   }));
+  // },
 
   updateOnePatientResult: (updatedPatient) => {
     set((state) => {
