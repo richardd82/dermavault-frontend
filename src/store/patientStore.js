@@ -1,6 +1,7 @@
 // patientStore.js
 import { create } from 'zustand';
 import api from "../hooks/axiosConfig";
+import toast from 'react-hot-toast';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
@@ -35,14 +36,61 @@ const usePatientStore = create((set, get) => ({
   },
   // Crear paciente
   createPatient: async (newData) => {
+    // console.log(newData, "<====== NewData");
+  
     try {
       const res = await api.post(`${API_URL}/patients/patient`, newData);
       set((state) => ({ patients: [...state.patients, res.data] }));
       return { success: true };
     } catch (err) {
-      return { success: false, message: err.message || "Error al crear usuario" };
+      // console.log(err, "<=========================err");
+  
+      // Verifica si el error tiene un mensaje específico (como la cédula duplicada)
+      if (err.response && err.response.data && err.response.data.message) {
+        // Muestra el mensaje del backend en el Toast
+        toast.error(err.response.data.message, {
+          duration: 5000,
+          style: {
+            background: "#4f46e5", 
+            color: "#fff", 
+            fontSize: "14px", 
+            padding: "16px 20px", 
+            borderRadius: "8px", 
+          },
+        });
+        return { success: false, message: err.response.data.message };
+      } else {
+        // En caso de error desconocido, muestra un mensaje genérico
+        toast.error("Error desconocido al crear el paciente.", {
+          duration: 5000,
+          style: {
+            background: "#4f46e5", 
+            color: "#fff", 
+            fontSize: "14px", 
+            padding: "16px 20px", 
+            borderRadius: "8px", 
+          },
+        });
+        return { success: false, message: 'Error desconocido al crear el paciente.' };
+      }
     }
   },
+  
+  // createPatient: async (newData) => {
+  //   console.log(newData, "<====== NewData")
+  //   try {
+  //     const res = await api.post(`${API_URL}/patients/patient`, newData);
+  //     set((state) => ({ patients: [...state.patients, res.data] }));
+  //     return { success: true };
+  //   } catch (err) {
+  //     console.log(res, "<=========================err")
+  //     if (err.response && err.response.data && err.response.data.message) {
+  //       return { success: false, message: err.response.data.message };
+  //     } else {
+  //       return { success: false, message: 'Error desconocido al crear el paciente.' };
+  //     }
+  //   }
+  // },
   // Editar paciente
   editPatient: async (id, updatedData) => {
     try {

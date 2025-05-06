@@ -85,16 +85,36 @@ const NewPatientModal = ({ onClose }) => {
     return `${year}-${month}-${day}`;
   };
 
+  const isValidEmail = (email) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+  };
+
   const handleSubmit = async () => {
     if (!validate()) return;
+
+    if (!isValidEmail(formData.email)) {
+      toast.error("El correo electrónico no tiene un formato válido.", {
+        duration: 5000,
+        style: {
+          background: "#4f46e5",
+          color: "#fff",
+          fontSize: "14px",
+          padding: "16px 20px",
+          borderRadius: "8px",
+        },
+      });
+      return;
+    }
    
       const formattedData = {
         ...formData,
         fecha_nacimiento: formatDateForBackend(formData.fecha_nacimiento),
       };
       const res =await createPatient(formattedData);
+      console.log(res, "<====RES")
       if (!res.success) {
-        toast.error("Error al guardar el usuario: " + err.response.data.message, {
+        toast.error("Error al guardar el usuario: " + res.message, {
           duration: 5000,
           style: {
             background: "#4f46e5", // color de fondo
