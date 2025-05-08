@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import api from "../hooks/axiosConfig";
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+const API_URL = import.meta.env.VITE_API_URL || 'http://192.168.1.1:3000/api';
 
 const useUserStore = create((set, get) => ({
   users: [],
