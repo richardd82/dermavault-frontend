@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import useAuthStore from '../store/authStore';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Button from '../components/Button';
 
 const Dashboard = () => {
-  const { user, token, logout } = useAuthStore();
-  const navigate = useNavigate();
+  const { user, token } = useAuthStore();
+  // const navigate = useNavigate();
   const [userData, setUserData] = useState(null);
   const [error, setError] = useState('');
 
@@ -44,10 +44,10 @@ const Dashboard = () => {
     fetchUserData();
   }, [user, token]);
 
-  const handleLogout = () => {
-    logout();
-    navigate('/');
-  };
+  // const handleLogout = () => {
+  //   logout();
+  //   navigate('/');
+  // };
 
   const formatFecha = (fecha) => {
     if (!fecha) return 'No registrado';
