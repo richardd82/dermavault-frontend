@@ -1,15 +1,16 @@
 import { useEffect, useState } from 'react';
 import useAuthStore from '../store/authStore';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import Button from '../components/Button';
 
 const Dashboard = () => {
-  const { user, token, logout } = useAuthStore();
-  const navigate = useNavigate();
+  const { user, token } = useAuthStore();
+  // const navigate = useNavigate();
   const [userData, setUserData] = useState(null);
   const [error, setError] = useState('');
 
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+  const API_URL = import.meta.env.VITE_API_URL || 'http://192.168.1.1:3000/api';
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -18,17 +19,17 @@ const Dashboard = () => {
         return;
       }
 
-      console.log('📡 Haciendo petición a:', `${API_URL}/users/${user.id}`);
+      // console.log('📡 Haciendo petición a:', `${API_URL}/users/${user.id}`);
 
       try {
         const res = await axios.get(`${API_URL}/users/${user.id}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
 
-        console.log('✅ Respuesta de la API:', res);
+        // console.log('✅ Respuesta de la API:', res);
 
         if (res.data?.id === user.id) {
-          console.log('✅ Datos correctos:', res.data);
+          // console.log('✅ Datos correctos:', res.data);
           setUserData(res.data);
         } else {
           console.log('⛔ El usuario en la API no coincide con el usuario en el estado.');
@@ -43,10 +44,10 @@ const Dashboard = () => {
     fetchUserData();
   }, [user, token]);
 
-  const handleLogout = () => {
-    logout();
-    navigate('/');
-  };
+  // const handleLogout = () => {
+  //   logout();
+  //   navigate('/');
+  // };
 
   const formatFecha = (fecha) => {
     if (!fecha) return 'No registrado';
@@ -65,13 +66,13 @@ const Dashboard = () => {
   };
 //className="min-h-screen flex flex-col items-center justify-center"
   return (
-    <div>
-      <h1 className="text-3xl font-bold mb-4">Bienvenido, {`${user?.first_name} ${user?.last_name}`}</h1>
+    <div className='mt-10 justify-center items-center'>
+      <h1 className="text-3xl font-bold mb-4">Bienvenido, {userData ? `${userData.first_name} ${userData.last_name}` : "Cargando..."}</h1>
 
       {error && <p className="text-red-500">{error}</p>}
 
       {userData ? (
-        <div className="bg-gray-100 p-4 rounded-lg shadow-lg">
+        <div className="bg-gray-100 dark:bg-slate-800 dark:text-white p-4 rounded-lg shadow-lg">
           <p><strong>Usuario:</strong> {userData.username}</p>
           <p><strong>Email:</strong> {userData.email}</p>
           <p><strong>Rol:</strong> {userData.role}</p>
@@ -81,12 +82,12 @@ const Dashboard = () => {
         <p className="text-gray-500">Cargando información del usuario...</p>
       )}
 
-      <button 
+      {/* <Button
+        className="mt-4 w-1/3" 
         onClick={handleLogout}
-        className="bg-red-600 text-white p-2 mt-4 rounded hover:bg-red-700"
       >
         Cerrar Sesión
-      </button>
+      </Button> */}
     </div>
   );
 };
