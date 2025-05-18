@@ -160,6 +160,9 @@ const Patients = () => {
               <th className='w-[25%] px-4 py-3 text-left font-semibold'>
                 Nombre
               </th>
+              <th className='w-[25%] px-4 py-3 text-left font-semibold'>
+                Apellido
+              </th>
               <th className='w-[15%] px-4 py-3 text-left font-semibold'>
                 Cédula
               </th>
@@ -196,6 +199,13 @@ const Patients = () => {
                       </div>
                       <span className='font-medium'>
                         {truncate(patient.nombre)}
+                      </span>
+                    </div>
+                  </td>
+                  <td>
+                    <div className='px-4 py-3'>                      
+                      <span className='font-medium'>
+                        {truncate(patient.apellido)}
                       </span>
                     </div>
                   </td>
@@ -241,7 +251,7 @@ const Patients = () => {
                   </div>
                   <div>
                     <p className='font-semibold text-gray-800 dark:text-white'>
-                      {truncate(patient.nombre)} {patient.apellido}
+                      {truncate(patient.nombre)} 
                     </p>
                     <p className='text-xs text-gray-500 dark:text-gray-400'>
                       Cédula: {patient.cedula}

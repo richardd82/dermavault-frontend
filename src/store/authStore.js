@@ -3,7 +3,7 @@ import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 
 // Definir la URL base del backend en Railway o local
-const API_URL = import.meta.env.VITE_API_URL || "http://192.168.1.1:3000/api";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 
 const useAuthStore = create((set) => {
   const token = localStorage.getItem("token");

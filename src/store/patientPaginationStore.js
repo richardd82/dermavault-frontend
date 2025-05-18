@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import api from "../hooks/axiosConfig"; // tu instancia Axios con token
 
-const API_URL = import.meta.env.VITE_API_URL || "http://192.168.1.1:3000/api";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 
 const usePatientPaginationStore = create((set, get) => ({
   patients: [],
@@ -65,7 +65,7 @@ export default usePatientPaginationStore;
 // store/patientPaginationStore.js
 // import { create } from "zustand";
 // import api from "../hooks/axiosConfig"; // tu instancia con token
-// const API_URL = import.meta.env.VITE_API_URL || "http://192.168.1.1:3000/api";
+// const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 
 // const usePatientPaginationStore = create((set, get) => ({
 //   patients: [],
