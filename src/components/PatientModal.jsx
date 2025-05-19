@@ -16,8 +16,8 @@ const PatientModal = ({ patient, onClose }) => {
   const [formData, setFormData] = useState({ ...patient });
   const { editPatient } = usePatientStore();
   // Obtenemos las funciones de actualización de los stores relevantes
-  const { clearSelectedPatient, updateOnePatientResult, setSelectedPatient } = useSearchStore();
-  const { updateOnePatient } = usePatientPaginationStore();
+  const { clearSelectedPatient } = useSearchStore();
+  // const { updateOnePatient } = usePatientPaginationStore();
 
 
   const handleChange = (e) => {
@@ -85,7 +85,7 @@ const PatientModal = ({ patient, onClose }) => {
               padding: "16px 20px", // espaciado interno
               borderRadius: "8px", // bordes redondeados
             },
-          });      
+          });
   
         } catch (storeError) {
           // Capturamos errores que ocurran DURANTE la actualización de los stores

@@ -20,7 +20,7 @@ const useMedicalHistoryPaginationStore = create((set, get) => ({
 
     try {
       const response = await api.get(`${API_URL}/histories?limit=${limit}&offset=${offset}`);
-      // console.log(response.data);
+      console.log(response.data);
       const newHistories = response.data.data || [];
 
       set({        

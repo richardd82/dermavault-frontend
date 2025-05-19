@@ -7,7 +7,7 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://192.168.1.1:3000/api';
 
 const usePatientStore = create((set, get) => ({
   patients: [],
-  patientsCount: 0,  
+  patientsCount: 0,
   loading: false,
   error: null,
   patient: null,
@@ -18,8 +18,8 @@ const usePatientStore = create((set, get) => ({
     try {
       const res = await api.get(`${API_URL}/patients/count`);
       set({ patientsCount: res.data.count });   // asumiendo { count: 12345 }
-    } catch (err) {
-      set({ error: "Error al obtener el total de pacientes" });
+    } catch (error) {
+      set({ error: "Error al obtener el total de pacientes " + error.message });
     }
   },
 
@@ -51,11 +51,11 @@ const usePatientStore = create((set, get) => ({
         toast.error(err.response.data.message, {
           duration: 5000,
           style: {
-            background: "#4f46e5", 
-            color: "#fff", 
-            fontSize: "14px", 
-            padding: "16px 20px", 
-            borderRadius: "8px", 
+            background: "#4f46e5",
+            color: "#fff",
+            fontSize: "14px",
+            padding: "16px 20px",
+            borderRadius: "8px",
           },
         });
         return { success: false, message: err.response.data.message };
@@ -64,11 +64,11 @@ const usePatientStore = create((set, get) => ({
         toast.error("Error desconocido al crear el paciente.", {
           duration: 5000,
           style: {
-            background: "#4f46e5", 
-            color: "#fff", 
-            fontSize: "14px", 
-            padding: "16px 20px", 
-            borderRadius: "8px", 
+            background: "#4f46e5",
+            color: "#fff",
+            fontSize: "14px",
+            padding: "16px 20px",
+            borderRadius: "8px",
           },
         });
         return { success: false, message: 'Error desconocido al crear el paciente.' };

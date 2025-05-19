@@ -84,7 +84,7 @@ const AdminData = ({ patient }) => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {[
-            { label: "No. de Cheque", name: "no_cheque" },
+            { label: "Régimen Fiscal", name: "no_cheque" },
             { label: "No. de Recibo", name: "no_recibo" },
             { label: "RFC", name: "rfc" },
           ].map(({ label, name }) => (

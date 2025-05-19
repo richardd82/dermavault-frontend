@@ -36,7 +36,7 @@ const MedicalHistories = () => {
     setLoadingHistoriesSearch,
     historyResults,
   } = useSearchStore();
-
+  // console.log(histories, "  <=============== histories");
   const [showNewModal, setShowNewModal] = useState(false);
   const [editingHistory, setEditingHistory] = useState(null);
   const [selectedHistory, setSelectedHistory] = useState(null);
@@ -90,7 +90,7 @@ const MedicalHistories = () => {
       e.preventDefault();
     }
   };
-  console.log(selectedHistory, "selectedHistory");
+  // console.log(selectedHistory, "selectedHistory");
   return (
     <div className='p-4'>
       <div className='sticky top-0 z-20 bg-[#f8f9fa] dark:bg-[#1a1b1e] border-b border-gray-200 dark:border-gray-700 pb-2 mb-6'>

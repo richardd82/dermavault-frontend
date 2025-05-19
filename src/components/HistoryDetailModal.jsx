@@ -47,13 +47,13 @@ const HistoryDetailModal = ({ history, onClose }) => {
   }));
   const { updateOneHistory } = useMedicalHistoryPaginationStore();
   const { updateOneSearchResult } = useSearchStore();
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+  // const handleChange = (e) => {
+  //   const { name, value } = e.target;
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     [name]: value,
+  //   }));
+  // };
   const {
     Patient,
     ClinicalData,
@@ -62,7 +62,7 @@ const HistoryDetailModal = ({ history, onClose }) => {
     Diagnosis,
     EvolutionDates,
   } = formData;
-
+// console.log(Patient, "   <============ Patients")
   useEffect(() => {
     if (editMode) {
       setTimeout(() => {
@@ -149,18 +149,18 @@ const HistoryDetailModal = ({ history, onClose }) => {
     new Date(isoDate).toLocaleDateString("es-MX", { timeZone: "UTC" });
 
   return (
-    <div className='fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm'>
+    <div className='fixed inset-0 bg-black/50 z-50 flex items-center  justify-center p-4 backdrop-blur-sm '>
       <CloseModalButton
         onClick={onClose}
         className='fixed top-4 right-1 sm:right-4 z-50'
       />
-      <div className='bg-white dark:bg-[#1a1b1e] w-full max-w-4xl rounded-lg shadow-lg flex flex-col overflow-y-hidden max-h-[90vh] pr-6 pl-6 pb-14 space-y-6'>
+      <div className='bg-white dark:bg-[#1a1b1e] w-full max-w-4xl rounded-lg shadow-lg flex flex-col overflow-y-hidden max-h-[99vh] pr-6 pl-6 pb-14 space-y-6'>
         <div className='sticky top-0 z-20 mt-4'>
           <div className=' flex justify-between items-center border-b pb-5 bg-white dark:bg-[#1a1b1e] '>
             <h2 className='text-xl font-bold text-gray-900 dark:text-white'>
               Detalles de la Historia Clínica
             </h2>
-            <div className=' scale-75 sm:scale-100 space-x-2 z-0'>
+            <div className=' scale-75 sm:scale-100 space-x-1 md:mr-10 z-0'>
               <button
                 onClick={editMode ? handleSave : () => setEditMode(true)}
                 className={clsx(
@@ -176,7 +176,7 @@ const HistoryDetailModal = ({ history, onClose }) => {
 
         <div className='grid grid-cols-1 md:grid-cols-2 gap-6  overflow-y-auto pr-6 -mr-6'>
           {/* Paciente */}
-          <section className='col-span-1 md:col-span-2'>
+          <section className='sticky top-0 col-span-1 md:col-span-2 dark:bg-[#1a1b1e] pb-4 z-50'>
             <h3 className='font-semibold text-gray-800 dark:text-gray-200 border-b pb-2 mb-2'>
               Paciente
             </h3>
@@ -191,13 +191,23 @@ const HistoryDetailModal = ({ history, onClose }) => {
               editMode={false}
             />
             <LabelValue
-              label='Correo'
-              value={Patient?.email}
+              label='Ocupación'
+              value={Patient?.ocupacion}
               editMode={false}
             />
             <LabelValue
-              label='Teléfono móvil'
-              value={Patient?.telefono_movil}
+              label='Estado Civil'
+              value={Patient?.estado_civil}
+              editMode={false}
+            />
+            <LabelValue
+              label='Sexo'
+              value={Patient?.sexo === "M" ? "Masculino" : Patient?.sexo === "F" ? "Femenino": "Otro" }
+              editMode={false}
+            />
+            <LabelValue
+              label='Lugar de Nacimiento'
+              value={Patient?.lugar_nacimiento}
               editMode={false}
             />
           </section>
@@ -399,7 +409,7 @@ const HistoryDetailModal = ({ history, onClose }) => {
                   {/* Observaciones */}
                   <div className='flex-1 flex flex-col'>
                     <label className='text-sm text-gray-700 dark:text-gray-300 mb-1'>
-                      Observaciones:
+                      Tratamiento:
                     </label>
                     {editMode ? (
                       <textarea
